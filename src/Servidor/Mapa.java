@@ -144,7 +144,21 @@ public class Mapa
 		return r;
 	}
 
+	public List<Coord> zonasMuitoPopuladas()
+	{
+		List<Coord> r = new ArrayList<>();
+		
+		for (int y = 0 ; y<this.N ; y++)
+			for (int x = 0 ; x<this.N ; x++)
+			{
+				Coord coord = new Coord(x, y);
+				int numTroti = this.trotinetesNaVizinhanca(coord);
+				if (numTroti > (int)(3*Math.pow(2,this.D+1)))
+					r.add(coord);
+			}
 
+		return r;
+	}
 
 	private String pad(int width, String padStr, String str)
 	{
@@ -198,9 +212,10 @@ public class Mapa
 
 		System.out.println(m.toString());
 		System.out.println("Zonas com pouca troti madje:" + m.zonasPoucoPopuladas().toString());
-		Reserva r = m.reservar(new Coord(0, 0));
-		System.out.println(r.toString());
-		System.out.println(m.toString());
-		System.out.println("Zonas com pouca troti madje:" + m.zonasPoucoPopuladas().toString());
+		System.out.println("Zonas com buesda troti madje:" + m.zonasMuitoPopuladas().toString());
+		// Reserva r = m.reservar(new Coord(0, 0));
+		// System.out.println(r.toString());
+		// System.out.println(m.toString());
+		// System.out.println("Zonas com pouca troti madje:" + m.zonasPoucoPopuladas().toString());
 	}
 }
