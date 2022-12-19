@@ -35,8 +35,15 @@ public class Mapa
 		}
 	}
 
-	
-	
+	// ┼ ─	
+
+	private String pad(int width, String padStr, String str)
+	{
+		int n = width - str.length();
+		if (n==0) return str;
+		return String.format("%0" + n + "d", 0).replace("0", padStr) + str;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -44,25 +51,30 @@ public class Mapa
 		this.lock.readLock().lock();
 		try
 		{
-			int biggestLen = 0;
+			int Nlen = String.valueOf(this.N).length(), biggestLen = Nlen + 1;
 
 			for (int[] line : this.mapa)
 				for (int val : line)
 					if (String.valueOf(val).length() > biggestLen)
 						biggestLen = String.valueOf(val).length();
 
-			biggestLen++;
+			r += pad(Nlen+1, " ", "│");
+			for (int i=0 ; i<this.N ; i++)
+			{
+				String texto = String.valueOf(i);
+				r += this.pad(biggestLen, " ", texto);
+			}
+
+			r += "\n" + pad(Nlen+1, "─", "┼") + pad(biggestLen*this.N + 1, "─","\n");
 
 			for (int i=0 ; i<this.N ; i++)
 			{
+				r += pad(Nlen, " ",""+i) + "│";
 				for (int j=0 ; j<this.N ; j++)
 				{
 					String texto = String.valueOf(this.mapa[i][j]);
-					int n = biggestLen - texto.length();
-					String padding = String.format("%0" + n + "d", 0).replace("0"," ");
-					r += padding + texto + " ";
+					r += pad(biggestLen, " ", texto);
 				}
-					// r += String.format("%*d ",biggestLen, this.mapa[i][j]);
 				r += "\n";
 			}
 
@@ -73,7 +85,7 @@ public class Mapa
 
 	public static void main(String[] args)
 	{
-		Mapa m = new Mapa(20, 2);
+		Mapa m = new Mapa(30, 2);
 
 		System.out.println(m.toString());
 	}
