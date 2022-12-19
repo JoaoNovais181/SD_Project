@@ -151,7 +151,7 @@ public class ClienteMenu implements Runnable {
      * @throws InterruptedException
      */
     public void menu_one_signup() throws IOException, InterruptedException {
-        String username, password, zona;
+        String username, password;
         Scanner is = new Scanner(System.in);
 
         System.out.print("Username: ");
@@ -161,8 +161,6 @@ public class ClienteMenu implements Runnable {
 
         System.out.print("Password: ");
         password = is.nextLine();
-
-        server_request("WRITEMAP");
 
         String result = String.join(";", "REGISTER", username, password);
         this.server_request(result);
@@ -185,55 +183,56 @@ public class ClienteMenu implements Runnable {
      * Método para fazer reserva de uma trotinete.
      */
     public void menu_two_reservar() {
+        /*
         try {
 
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        } //catch (IOException | InterruptedException e) {
+            //e.printStackTrace();
+        }*/
     }
 
     /**
      * Método para apresentar todas as trotinetes livres.
      */
     public void menu_two_listartrotinetes() {
-        try {
+        /*try {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
      * Método para listar as recompensas disponiveis.
      */
     public void menu_two_listarrecompensas() {
-        try {
+        /*try {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
      * Método para estacionar uma trotinete.
      */
     public void menu_two_estacionar() {
-        try {
+        /*try {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
      * Método para notificar sobre recompensas.
      */
     public void menu_two_notificar() {
-        try {
+        /*try {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
@@ -280,7 +279,7 @@ public class ClienteMenu implements Runnable {
             this.out = new DataOutputStream(new BufferedOutputStream(cs.getOutputStream()));
 
             while (!this.status.isExited()) {
-                this.menu_status = 1;
+                this.menu_status = 0;
                 menu_draw();
                 read_menu_output();
             }
@@ -291,4 +290,5 @@ public class ClienteMenu implements Runnable {
 
         }
     }
+
 }
