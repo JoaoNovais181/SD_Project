@@ -9,9 +9,9 @@ public class ListaRecompensas
 	private ReentrantReadWriteLock lock;
 	private List<Recompensa> recompensas;
 
-	public ListaRecompensas()
+	public ListaRecompensas(ReentrantReadWriteLock lock)
 	{
-		this.lock = new ReentrantReadWriteLock(true);
+		this.lock = lock;
 		this.recompensas = new ArrayList<>();
 	}
 

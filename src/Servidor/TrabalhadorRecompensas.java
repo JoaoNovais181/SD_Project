@@ -9,22 +9,23 @@ public class TrabalhadorRecompensas implements Runnable
 	private ListaRecompensas recompensas;
 	private Mapa mapa;
 	private Contador contador;
-	private ReentrantLock lock;
+	private ReentrantLock lockReservas;
 	private Condition esperaAcao;
 	private boolean running;
 
-	public TrabalhadorRecompensas (ListaRecompensas recompensas, Mapa mapa, Contador contador, Condition esperaAcao)
+	public TrabalhadorRecompensas (ListaRecompensas recompensas, Mapa mapa, Contador contador, ReentrantLock lockReservas, Condition esperaAcao)
 	{
 		this.recompensas = recompensas;
 		this.mapa = mapa;
 		this.contador = contador;
-		this.lock = new ReentrantLock();
+		this.lockReservas = lockReservas;
 		this.esperaAcao = esperaAcao;
 		this.running = true;
 	}
 
 	public void run()
 	{
+		this.lockReservas.lock();
 		try
 		{
 			while (this.running)
@@ -53,25 +54,19 @@ public class TrabalhadorRecompensas implements Runnable
 
 				while (c == contador.getContador())
 				{
-					this.lock.lock();
 					this.esperaAcao.await();;
-					this.lock.unlock();
 				}
 			}
 		}
-		catch ( Exception e )
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+		finally { this.lockReservas.unlock(); }
 	}
 
 	public void shutdown()
 	{
-		this.lock.lock();
-		try
-		{
-			this.running = false;
-		}
-		finally { this.lock.unlock(); }
+		this.running = false;
 	}
 }
