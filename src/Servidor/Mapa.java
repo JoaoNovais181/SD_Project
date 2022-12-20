@@ -5,13 +5,50 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Implementação da classe Mapa, usada para armazenar a quantidade de trotinetes
+ * em cada zona, no contexto do Trabalho Prático de Sistemas Distribuídos,
+ * garantindo a exclusão mútua no acesso às suas variáveis.
+ *
+ * @author João Carlos Fernandes Novais
+ * */
 public class Mapa
 {
+	/**
+	 * {@code Lock} de escrita e leitura usado para garantir a exclusão mútua 
+	 * */
 	private ReentrantReadWriteLock lock;
-	private final int N;
-	private int[][] mapa;
-	private final float ratioTrotinete = 1f, D;
 
+	/**
+	 * Valor constante referente à largura e comprimento do mapa
+	 * */
+	private final int N;
+
+	/**
+	 * Matriz de inteiros com o número de trotinetes em cada zona (sendo
+	 * cada zona denominada como um valor na tabela) 
+	 * */
+	private int[][] mapa;
+
+	/**
+	 * {@code float} que representa uma média de trotinetes por posição,
+	 * usado para o povoamento do mapa
+	 * */
+	private final float ratioTrotinete = 1f; 
+	
+	/**
+	 * {@code float} usado para representar a distância fixa usada para uma vizinhança
+	 * */
+	private final float D;
+
+	/**
+	 * Constroi um mapa NxN, que considera uma vizinhança como todos os pontos
+	 * com distância &lt;= D de um ponto central
+	 *
+	 * @param  N  Valor constante referente à largura e comprimento do mapa
+     *
+	 * @param  D {@code float} usado para representar a distância fixa usada para uma vizinhança 
+	 * */
 	public Mapa(int N, float D)
 	{
 		this.lock = new ReentrantReadWriteLock();
@@ -37,10 +74,25 @@ public class Mapa
 		}
 	}
 
+	/**
+	 * Retorna o valor de N
+	 *
+	 * @return valor de N
+	 * */
 	public int getN() { return this.N; }
 
+	/**
+	 * Retorna o valor de D
+	 *
+	 * @return valor de D
+	 * */
 	public float getD() { return this.D; }
 
+	/**
+	 * Método usado quando um cliente estaciona uma trotinete numa coordenada.
+	 *
+	 * @param  coord  {@link Coord} onde se irá estacionar a trotinete
+	 * */
 	public void estacionar(Coord coord)
 	{
 		this.lock.writeLock().lock();
@@ -51,6 +103,21 @@ public class Mapa
 		finally { this.lock.writeLock().unlock(); }
 	}
 
+	/**
+	 * Método usado para reservar uma trotinete numa determinada vizinhança
+	 *
+	 * <p> O método começa por obter o {@code Lock} e por verificar se é
+	 * possível reservar uma trotinete na posição dada como argumento,
+	 * caso não seja verifica se é possivel na vizinhança. No final é 
+	 * retornado uma {@link Reserva} referente à reserva pedida, que 
+	 * se for bem sucedida terá uma data, coordenada de origem e código de
+	 * reserva, e caso contrário terá apenas um código de erro</p>
+	 *
+	 * @param  coord  {@link Coord} referente ao ponto central da vizinhança
+	 * onde se pretende reservar uma trotinete
+	 *
+	 * @return Objeto do tipo {@link Reserva} referente à reserva pedida
+	 * */
 	public Reserva reservar(Coord coord)
 	{
 		Coord localReserva = null;
@@ -94,6 +161,14 @@ public class Mapa
 		finally { this.lock.writeLock().unlock(); }
 	}
 
+	/**
+	 * Função que retorna o número de trotinetes numa vizinhança
+	 *
+	 * @param  coord  {@link Coord} referente à coordenada central da
+	 * vizinhança
+	 *
+	 * @return  número total de trotinetes na vizinhança de centro em {@code coord}
+	 * */
 	public int trotinetesNaVizinhanca (Coord coord)
 	{
 		int xCentral = coord.getX(), yCentral = coord.getY();
@@ -132,6 +207,13 @@ public class Mapa
 		finally { this.lock.readLock().unlock(); }	
 	}
 	
+	/**
+	 * Retorna uma lista com todas as zonas pouco populadas, isto é,
+	 * que tenham em média numeroTrotinetes &lt; 2^D
+	 *
+	 * @return {@link List}&lt;{@link Coord}&gt; com as coordenadas centrais
+	 * das vizinhanças com pouca abundância de trotinetes
+	 * */
 	public List<Coord> zonasPoucoPopuladas()
 	{
 		List<Coord> r = new ArrayList<>();
@@ -148,6 +230,13 @@ public class Mapa
 		return r;
 	}
 
+	/**
+	 * Retorna uma lista com todas as zonas pouco populadas, isto é,
+	 * que tenham em média numeroTrotinetes &gt; 3*(2^(D+1))
+	 *
+	 * @return {@link List}&lt;{@link Coord}&gt; com as coordenadas centrais
+	 * das vizinhanças com muita abundância de trotinetes
+	 * */
 	public List<Coord> zonasMuitoPopuladas()
 	{
 		List<Coord> r = new ArrayList<>();
@@ -164,6 +253,15 @@ public class Mapa
 		return r;
 	}
 
+	/**
+	 * Função usada para pretty print do mapa
+	 *
+	 * @param  witdh  largura total onde se quer colocar {@code str}
+	 * @param  padStr  {@link String} a colocar à esquerda de {@code str}
+	 * @param  str  {@link String} a colocar a direita
+	 *
+	 * @return texto formatado
+	 * */
 	private String pad(int width, String padStr, String str)
 	{
 		int n = width - str.length();
@@ -171,6 +269,11 @@ public class Mapa
 		return String.format("%0" + n + "d", 0).replace("0", padStr) + str;
 	}
 
+	/**
+	 * Representação textual do mapa
+	 *
+	 * @return representação textual do mapa
+	 * */
 	@Override
 	public String toString()
 	{
@@ -208,18 +311,5 @@ public class Mapa
 		}
 		finally { this.lock.readLock().unlock(); }
 		return r;
-	}
-
-	public static void main(String[] args)
-	{
-		Mapa m = new Mapa(20, 2.0f);
-
-		System.out.println(m.toString());
-		System.out.println("Zonas com pouca troti madje:" + m.zonasPoucoPopuladas().toString());
-		System.out.println("Zonas com buesda troti madje:" + m.zonasMuitoPopuladas().toString());
-		// Reserva r = m.reservar(new Coord(0, 0));
-		// System.out.println(r.toString());
-		// System.out.println(m.toString());
-		// System.out.println("Zonas com pouca troti madje:" + m.zonasPoucoPopuladas().toString());
 	}
 }
