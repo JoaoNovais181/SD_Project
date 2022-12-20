@@ -1,6 +1,7 @@
 package Cliente;
 
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -15,6 +16,7 @@ public class ClienteMenu implements Runnable {
     private Socket cs;
     private ClienteStatus status;
     private DataOutputStream out;
+    private DataInputStream in;
 
     public ClienteMenu(Socket cs, ClienteStatus status) {
         menu_status = 0;
@@ -279,7 +281,9 @@ public class ClienteMenu implements Runnable {
             this.out = new DataOutputStream(new BufferedOutputStream(cs.getOutputStream()));
 
             while (!this.status.isExited()) {
-                this.menu_status = 0;
+                if (this.status.getLogin()){
+                    this.menu_status=1;
+                } else if (this.status.getLogin()) this.menu_status = 0;
                 menu_draw();
                 read_menu_output();
             }

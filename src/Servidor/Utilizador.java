@@ -6,8 +6,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class Utilizador {
     private final String username;
     private final String password;
-    private int coordX;
-    private int coordY;
     private ReentrantLock lock = new ReentrantLock();
 
 
@@ -19,11 +17,9 @@ public class Utilizador {
         @param coordX   Coordenada x do Utilizador
         @param coordY   Coordenada y do Utilizador
      */
-    public Utilizador(String user, String pass, int coordX, int coordY){
+    public Utilizador(String user, String pass){
         this.username = user;
         this.password = pass;
-        this.coordX   = coordX;
-        this.coordY   = coordY;
         this.lock     = new ReentrantLock();
 
     }
@@ -43,16 +39,7 @@ public class Utilizador {
         return this.password.equals(pass);
     }
 
-    /*
-        Método para atualizar as coordemadas do Utilizador
 
-        @param x  Nova coordenada dos x do Utilizador
-        @param y  Nova coordenada dos y do Utilizador
-     */
-    public void setCoords(int x, int y){
-        this.coordX = x;
-        this.coordY = y;
-    }
 
 
 
