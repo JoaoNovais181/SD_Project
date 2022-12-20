@@ -37,6 +37,10 @@ public class Mapa
 		}
 	}
 
+	public int getN() { return this.N; }
+
+	public float getD() { return this.D; }
+
 	public void estacionar(Coord coord)
 	{
 		this.lock.writeLock().lock();

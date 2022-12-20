@@ -27,6 +27,17 @@ public class Recompensa
 	}
 
 	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null) return false;
+
+		if (obj.getClass() != this.getClass()) return false;
+
+		Recompensa r = (Recompensa)obj;
+		return this.origem.equals(r.getOrigem()) && this.destino.equals(r.getDestino());
+	}
+
+	@Override
 	public String toString()
 	{
 		return this.origem.toString() + "->" + this.destino.toString();

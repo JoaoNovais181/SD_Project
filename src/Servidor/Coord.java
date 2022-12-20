@@ -1,5 +1,6 @@
 package Servidor;
 
+import java.util.Random;
 
 public class Coord
 {
@@ -18,6 +19,13 @@ public class Coord
 	public float DistanceTo(Coord coord)
 	{
 		return Math.abs(this.x - coord.getX()) + Math.abs(this.y - coord.getY());
+	}
+
+	public static Coord randomCoord(int N)
+	{
+		Random rnd = new Random(ProcessHandle.current().pid());
+		
+		return new Coord(rnd.nextInt(N), rnd.nextInt(N));
 	}
 
 	@Override

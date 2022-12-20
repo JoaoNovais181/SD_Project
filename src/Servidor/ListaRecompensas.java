@@ -32,4 +32,20 @@ public class ListaRecompensas
 		}
 		finally { this.lock.writeLock().unlock(); }
 	}
+
+	public boolean removeRecompensa(Recompensa r)
+	{
+		this.lock.writeLock().lock();
+		try
+		{
+			return this.recompensas.remove(r);
+		}
+		finally { this.lock.writeLock().unlock(); }
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.recompensas.toString();
+	}
 }
