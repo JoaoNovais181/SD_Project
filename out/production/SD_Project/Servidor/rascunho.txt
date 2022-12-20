@@ -1,0 +1,154 @@
+/**
+     * Método que altera localização de um utilizador.
+     *
+     * @param msg Pedido ao servidor.
+     * @throws IOException
+     */
+    private void commandChangeZone(String msg) throws IOException {
+        String[] args = msg.split(";");
+        String ret;
+        try {
+            if ((ret = this.estado.changeZone(this.active_user, args[1].charAt(0))).equals("true")) {
+                out.writeUTF("UPDATED SUCCESSFULLY");
+                out.flush();
+            } else {
+                out.writeUTF("UPDATED SUCCESSFULLY");
+                out.flush();
+                this.estado.notificaVaga(ret.charAt(0));
+            }
+            HistoricParser.addC(this.active_user, args[1].charAt(0), this.estado.getUser(active_user).isInfected(), false);
+        } catch (BadZoneException e) {
+            out.writeUTF("BAD ZONE");
+            out.flush();
+        } catch (InvalidUserException e) { // não deve calhar aqui
+            out.writeUTF("INVALID USER");
+            out.flush();
+        }
+    }
+    /**
+     * Método que consulta uma dada zona inserida pelo utilizador
+     *
+     * @param msg Pedido ao servidor.
+     * @throws IOException
+     */
+    private void commandConsultZone(String msg) throws IOException {
+        try {
+            String[] args = msg.split(";");
+            String res;
+            char zone = args[1].charAt(0);
+            int qt = this.estado.zoneConsult(zone);
+            if (qt == 0) {
+                res = "THERE IS NOBODY IN ZONE " + zone;
+            }
+            else if (qt == 1){
+                res = "THERE IS 1 PERSON IN ZONE " + zone;
+            }
+            else{
+                res = "THERE ARE " + qt + " PEOPLE IN ZONE " + zone;
+            }
+            out.writeUTF(res);
+            out.flush();
+        } catch (BadZoneException e) {
+            out.writeUTF("INVALID ZONE");
+            out.flush();
+        }
+    }
+    /**
+     * Método que imprime para o utilizador um mapa com a quantidade de utilizadores nas várias zonas.
+     *
+     * @throws IOException
+     */
+    private void commandConsultMap() throws IOException {
+        out.writeUTF(this.estado.mapConsult());
+        out.flush();
+    }
+
+
+    /
+
+    /**
+     * Método que altera estado de infeção do utilizador.
+     *
+     * @param msg Pedido ao servidor.
+     * @throws IOException
+     */
+    private void commandInformState(String msg) throws IOException{
+        String[] args = msg.split(";");
+        System.out.println(args[1]);
+        boolean state;
+
+        state = args[1].equals("TRUE");
+        char zone = this.estado.getZone(this.estado.getUser(active_user).getX(),this.estado.getUser(active_user).getY());
+
+        if (state) { // está infetado
+            this.estado.setInfected(active_user, state);
+            estado.notificaInfecao(this.active_user);
+            out.writeUTF("USER INFECTED");
+            HistoricParser.addC(active_user, zone, true, false);
+        } else {
+            if (this.estado.getUser(active_user).isInfected()) { // mudou de infetado -> não infetado
+                this.estado.setInfected(active_user, state); // atualiza estado para não infetado
+
+
+                //verificar isto
+                this.estado.atualizaUsers(zone,active_user); // atualiza lista de recently with
+
+
+                HistoricParser.addC(active_user, zone, false, true);
+            }
+            out.writeUTF("USER NOT INFECTED");
+        }
+        out.flush();
+    }
+    /**
+     * Método que notifica todos os utilizadores que estão em risco de estarem infetados.
+     *
+     * @param msg Pedido ao servidor do NotificationHandler.
+     * @throws IOException
+     */
+    private void commandServerNotify(String msg) throws IOException {
+        String[] args = msg.split(";");
+        System.out.println(args[1]);
+        if (args[1].equals("RISK-INFECTED")) {
+            out.writeUTF("YOU'VE BEEN IN CONTACT WITH AN INFECTED PERSON");
+            out.flush();
+        }
+    }
+    /**
+     * Método que adiciona utilizador à lista de utilizadores a notificar por zona.
+     *
+     * @param msg Pedido ao servidor.
+     * @throws IOException
+     */
+    private void commandConsultZoneNotify(String msg) throws IOException {
+        try {
+            String[] args = msg.split(";");
+            System.out.println(msg);
+            char zone = args[1].charAt(0);
+            if(this.estado.zoneConsult(zone) == 0){
+                out.writeUTF("ZONE " + zone + " IS ALREADY EMPTY");
+                out.flush();
+            }
+            else if (this.estado.addNotifyUser(this.active_user, zone)) {
+                String output = "YOU WILL RECEIVE NOTIFICATION WHEN ZONE " + zone + " IS EMPTY";
+                out.writeUTF(output);
+                out.flush();
+            } else {
+                out.writeUTF("ZONE ALREADY ADDED");
+                out.flush();
+            }
+        } catch (BadZoneException e) {
+            out.writeUTF("INVALID ZONE");
+            out.flush();
+        }
+    }
+    /**
+     * Método que faz download de um mapa com estatísticas dos utilizadores.
+     *
+     * @throws IOException
+     */
+    private void commandDownloadMap() throws IOException {
+        out.writeUTF("DOWNLOAD SUCCESSFUL.\nYOU CAN FIND IT AT: " + HistoricParser.statisticsMapFile(this.estado.getMapaLength()));
+        out.flush();
+    }
+s

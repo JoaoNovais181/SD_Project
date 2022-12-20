@@ -15,11 +15,13 @@ public class Servidor {
      */
     public static void main(String[] args) throws IOException{
         ServerSocket ss = new ServerSocket(12345);
-        Map<String,Utilizador> utilizadores = new HashMap<>();
+        //Map<String,Utilizador> utilizadores = new HashMap<>();
 
         while(true){
             Socket cs = ss.accept();
-
+            System.out.println("Conexão estabelecida");
+            Thread worker = new Thread(new GereMensagem(cs));
+            worker.start();
         }
     }
 }
