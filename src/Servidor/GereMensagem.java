@@ -68,15 +68,15 @@ public class GereMensagem implements Runnable{
 
         switch (args[0]) {
             case "LOGIN":
-                commandLogin(msg);
+                login(msg);
                 break;
         
             case "REGISTER":
-                commandSign(msg);
+                sign(msg);
                 break;
             
             case "LOGOUT":
-                commandLogout();
+                logout();
                 break;
 
             default: {
@@ -92,7 +92,7 @@ public class GereMensagem implements Runnable{
     /**
      * Método que inicia o processo de término de uma conexão.
      */
-    private void commandLogout() throws IOException {
+    private void logout() throws IOException {
         if (this.active_user != null) {
             this.active_user = null;
         }
@@ -106,7 +106,7 @@ public class GereMensagem implements Runnable{
      * @param msg Pedido ao servidor.
      * @throws IOException
      */
-    private void commandLogin(String msg) throws IOException{
+    private void login(String msg) throws IOException{
         String[] args = msg.split(";");
         String password = (args.length > 2) ? args[2] : ""; // permitir passes vazias
         String user = args[1];
@@ -127,7 +127,7 @@ public class GereMensagem implements Runnable{
             *
             * @param msg Pedido ao servidor.
             */
-    private void commandSign(String msg) throws IOException {
+    private void sign(String msg) throws IOException {
 
         String[] args = msg.split(";");
         System.out.println(args[1] + args[2]);

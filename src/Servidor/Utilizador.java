@@ -1,27 +1,18 @@
 package Servidor;
 
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 public class Utilizador {
     private final String username;
     private final String password;
-    private ReentrantLock lock = new ReentrantLock();
-
 
     /*
         Construtor da class Utilizador
 
         @param user     Username do Utilizador
         @param pass     Password do Utilizador
-        @param coordX   Coordenada x do Utilizador
-        @param coordY   Coordenada y do Utilizador
      */
     public Utilizador(String user, String pass){
         this.username = user;
         this.password = pass;
-        this.lock     = new ReentrantLock();
-
     }
 
     public String getUsername(){
@@ -38,8 +29,6 @@ public class Utilizador {
     public boolean verificaPass (String pass){
         return this.password.equals(pass);
     }
-
-
 
 
 

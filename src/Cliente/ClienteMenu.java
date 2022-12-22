@@ -27,15 +27,15 @@ public class ClienteMenu implements Runnable {
     /**
      * Método usado para desenhar os menus.
      */
-    public void menu_draw() {
+    public void printmenu() {
         switch (this.menu_status) {
-            case 0:
-                System.out.println("1 - Log In\n2 - Registar\n0 - Sair");
+            case 0: // escolher registo/login
+                System.out.println("1 - Log In\n 2 - Registar\n 0 - Sair");
                 break;
 
-            case 1: // está logged
+            case 1: // tem sessão iniciada
                 System.out.println(
-                        "1 - Fazer reserva\n2 - Listar trotinetes livres\n3 - Listar recompensas\n4 - Estacionar\n5 - Notificar\n0 - Logout");
+                        "1 - Fazer reserva\n 2 - Listar trotinetes livres\n 3 - Listar recompensas\n 4 - Estacionar\n 5 - Notificar\n 0 - Logout");
                 break;
 
         }
@@ -47,13 +47,13 @@ public class ClienteMenu implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void read_menu_output() throws IOException, InterruptedException {
+    public void readmenu() throws IOException, InterruptedException {
         switch (this.menu_status) {
             case 0:
-                menu_one_output();
+                menu_one();
                 break;
             case 1:
-                menu_two_output();
+                menu_two();
                 break;
             default:
                 break;
@@ -66,7 +66,7 @@ public class ClienteMenu implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void menu_one_output() throws IOException, InterruptedException {
+    public void menu_one() throws IOException, InterruptedException {
         int option = this.readOpt();
 
         switch (option) {
@@ -74,14 +74,14 @@ public class ClienteMenu implements Runnable {
                 server_request("EXIT");
                 break;
             case 1:
-                menu_one_login();
+                login();
                 break;
             case 2:
-                menu_one_signup();
+                signup();
                 break;
             default: {
-                System.out.println("Por favor insira um número das opções dadas");
-                menu_one_output();
+                System.out.println("Opção inválida. Escolha uma nova opção:");
+                menu_one();
                 break;
             }
         }
@@ -90,30 +90,30 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para interpretar a decisão do cliente no menu 2.
      */
-    public void menu_two_output() { // LOGGED IN
+    public void menu_two() { // LOGGED IN
         int option = this.readOpt();
         switch (option) {
             case 0:
-                menu_two_logout();
+                logout();
                 break;
             case 1:
-                menu_two_reservar();
+                reservar();
                 break;
             case 2:
-                menu_two_listartrotinetes();
+                listartrotinetes();
                 break;
             case 3:
-                menu_two_listarrecompensas();
+                listarrecompensas();
                 break;
             case 4:
-                menu_two_estacionar();
+                estacionar();
                 break;
             case 5:
-                menu_two_notificar();
+                notificar();
                 break;
             default: {
-                System.out.println("Por favor insira um número das opções dadas");
-                menu_two_output();
+                System.out.println("Opção inválida. Escolha uma nova opção:");
+                menu_two();
             }
         }
     }
@@ -124,7 +124,7 @@ public class ClienteMenu implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void menu_one_login() throws IOException, InterruptedException {
+    public void login() throws IOException, InterruptedException {
         String username, password;
         Scanner is = new Scanner(System.in);
 
@@ -139,8 +139,7 @@ public class ClienteMenu implements Runnable {
         String result = String.join(";", "LOGIN", username, password);
         this.server_request(result);
 
-        if (this.status.getLogin()) {
-            // checkUserMsg(username); // para fazer os avisos
+        if (this.status.getLogin()) { //caso o login seja bem sucedido
             this.menu_status++;
         }
 
@@ -152,7 +151,7 @@ public class ClienteMenu implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void menu_one_signup() throws IOException, InterruptedException {
+    public void signup() throws IOException, InterruptedException {
         String username, password;
         Scanner is = new Scanner(System.in);
 
@@ -172,7 +171,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para dar logout.
      */
-    public void menu_two_logout() {
+    public void logout() {
         try {
             server_request("LOGOUT");
             this.menu_status = 0;
@@ -184,7 +183,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para fazer reserva de uma trotinete.
      */
-    public void menu_two_reservar() {
+    public void reservar() {
         /*
         try {
 
@@ -196,7 +195,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para apresentar todas as trotinetes livres.
      */
-    public void menu_two_listartrotinetes() {
+    public void listartrotinetes() {
         /*try {
 
         } catch (IOException | InterruptedException e) {
@@ -207,7 +206,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para listar as recompensas disponiveis.
      */
-    public void menu_two_listarrecompensas() {
+    public void listarrecompensas() {
         /*try {
 
         } catch (IOException | InterruptedException e) {
@@ -218,7 +217,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para estacionar uma trotinete.
      */
-    public void menu_two_estacionar() {
+    public void estacionar() {
         /*try {
 
         } catch (IOException | InterruptedException e) {
@@ -229,7 +228,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para notificar sobre recompensas.
      */
-    public void menu_two_notificar() {
+    public void notificar() {
         /*try {
 
         } catch (IOException | InterruptedException e) {
@@ -284,10 +283,10 @@ public class ClienteMenu implements Runnable {
                 if (this.status.getLogin()){
                     this.menu_status=1;
                 } else if (this.status.getLogin()) this.menu_status = 0;
-                menu_draw();
-                read_menu_output();
+                printmenu();
+                readmenu();
             }
-            System.out.println("Exiting ...");
+            System.out.println("Exiting");
         } catch (IOException | InterruptedException e) {
             System.out.println("error");
             e.printStackTrace();
