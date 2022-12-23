@@ -22,6 +22,7 @@ public class GereMensagem implements Runnable{
     private DataInputStream in;
     private String active_user;
     private Map<String, Utilizador> users;
+    private Mapa mapa = new Mapa(20,2);
     private final ReadWriteLock l = new ReentrantReadWriteLock();
     private final Lock wl = l.writeLock();
     private final Lock rl = l.readLock();
@@ -77,7 +78,7 @@ public class GereMensagem implements Runnable{
                 logout();
                 break;
             case "RESERVAR":
-                reservar(msg);
+                reserva(msg);
                 break;
             case "LISTARTROTINETES":
                 break;
@@ -108,7 +109,7 @@ public class GereMensagem implements Runnable{
         out.flush();
     }
 
-    /**
+     /**
      * Método reponsável por fazer login de um utilizador.
      *
      * @param msg Pedido ao servidor.
@@ -162,16 +163,11 @@ public class GereMensagem implements Runnable{
     }
 
 
-    private void reservar(String msg) throws IOException {
+    private void reserva(String msg) throws IOException {
         String[] args = msg.split(";");
-        wl.lock();
-        Reserva r;
-        try {
-            Coord c = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-            r = new Reserva(c);
-        } finally {
-            wl.unlock();
-        }
+        Coord c = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        Reserva r = mapa.reservar(c);
+
         if (r.getCodigoRetorno() == 0) {
             out.writeUTF("SUCCESSFUL RESERVATION");
             out.flush();

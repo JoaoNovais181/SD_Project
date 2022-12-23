@@ -228,11 +228,21 @@ public class ClienteMenu implements Runnable {
      * Método para estacionar uma trotinete.
      */
     public void estacionar() {
-        /*try {
+        String cod;
+        Scanner is = new Scanner(System.in);
 
+        System.out.print("Código Reserva: ");
+        cod = is.nextLine();
+
+        if (cod.isEmpty())
+            return;
+
+        try {
+            String result = String.join(";", "Estacionar", cod);
+            this.server_request(result);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     /**
