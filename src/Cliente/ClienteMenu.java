@@ -184,12 +184,22 @@ public class ClienteMenu implements Runnable {
      * Método para fazer reserva de uma trotinete.
      */
     public void reservar() {
-        /*
-        try {
+        String x,y;
+        Scanner is = new Scanner(System.in);
 
-        } //catch (IOException | InterruptedException e) {
-            //e.printStackTrace();
-        }*/
+        System.out.print("X: ");
+        x = is.nextLine();
+        if (x.isEmpty())
+            return;
+
+        System.out.print("Y: ");
+        y = is.nextLine();
+        try {
+            String result = String.join(";", "RESERVAR", x, y);
+            this.server_request(result);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

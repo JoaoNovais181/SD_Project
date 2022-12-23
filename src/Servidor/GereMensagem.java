@@ -78,7 +78,17 @@ public class GereMensagem implements Runnable{
             case "LOGOUT":
                 logout();
                 break;
-
+            case "RESERVAR":
+                reservar(msg);
+                break;
+            case "LISTARTROTINETES":
+                break;
+            case "LISTARRECOMPENSAS":
+                break;
+            case "ESTACIONAR":
+                break;
+            case "NOTIFICAR":
+                break;
             default: {
                 this.out.writeUTF("Erro");
                 out.flush();
@@ -151,6 +161,28 @@ public class GereMensagem implements Runnable{
         } finally {
             wl.unlock();
         }
+    }
+
+
+    private void reservar(String msg) throws IOException {
+        String[] args = msg.split(";");
+        wl.lock();
+        Reserva r;
+        try {
+            Coord c = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+            r = new Reserva(c);
+        } finally {
+            wl.unlock();
+        }
+        if (r.getCodigoRetorno() == 0) {
+            out.writeUTF("SUCCESSFUL RESERVATION");
+            out.flush();
+        }
+        else {
+            out.writeUTF("UNSUCCESSFUL RESERVATION");
+            out.flush();
+        }
+
     }
 
 
