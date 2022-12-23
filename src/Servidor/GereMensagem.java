@@ -70,11 +70,9 @@ public class GereMensagem implements Runnable{
             case "LOGIN":
                 login(msg);
                 break;
-        
             case "REGISTER":
                 sign(msg);
                 break;
-            
             case "LOGOUT":
                 logout();
                 break;

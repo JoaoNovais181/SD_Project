@@ -30,12 +30,12 @@ public class ClienteMenu implements Runnable {
     public void printmenu() {
         switch (this.menu_status) {
             case 0: // escolher registo/login
-                System.out.println("1 - Log In\n 2 - Registar\n 0 - Sair");
+                System.out.println(" 1 - Log In\n 2 - Registar\n 0 - Sair");
                 break;
 
             case 1: // tem sessão iniciada
                 System.out.println(
-                        "1 - Fazer reserva\n 2 - Listar trotinetes livres\n 3 - Listar recompensas\n 4 - Estacionar\n 5 - Notificar\n 0 - Logout");
+                        " 1 - Fazer reserva\n 2 - Listar trotinetes livres\n 3 - Listar recompensas\n 4 - Estacionar\n 5 - Notificar\n 0 - Logout");
                 break;
 
         }
