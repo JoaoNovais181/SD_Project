@@ -8,6 +8,7 @@ package Servidor;
  * */
 public class Recompensa
 {
+
 	/**
 	 * Coordenadas de origem e destino da recompensa
 	 * */

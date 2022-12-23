@@ -118,7 +118,7 @@ public class Mapa
 	 *
 	 * @return Objeto do tipo {@link Reserva} referente à reserva pedida
 	 * */
-	public Reserva reservar(Coord coord)
+	public Coord reservar(Coord coord)
 	{
 		Coord localReserva = null;
 		this.lock.writeLock().lock();
@@ -153,10 +153,9 @@ public class Mapa
 				}
 			}
 
-			if (localReserva == null)
-				return new Reserva(1);
-			this.mapa[localReserva.getY()][localReserva.getX()]--;
-			return new Reserva(localReserva);
+			if (localReserva != null)
+				this.mapa[localReserva.getY()][localReserva.getX()]--;
+			return localReserva;
 		}
 		finally { this.lock.writeLock().unlock(); }
 	}

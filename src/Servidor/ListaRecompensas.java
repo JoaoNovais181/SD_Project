@@ -98,6 +98,25 @@ public class ListaRecompensas
 		finally { this.lock.writeLock().unlock(); }
 	}
 
+	public boolean elegivel (Coord inicio, Coord fim)
+	{
+		this.lock.readLock().lock();
+		try
+		{
+			for (Recompensa r : this.recompensas)
+				if (r.elegivel(inicio, fim))
+					return true;
+			return false;
+		}
+		finally { this.lock.readLock().unlock(); }
+	}
+
+
+	public List<Recompensa> getListaRecompensas()
+	{
+		return new ArrayList<>(this.recompensas);
+	}
+
 	/**
 	 * Retorna uma representação textual da classe, na qual se vê, equivalente
 	 * à representação textual do objeto onde guarda as recompensas

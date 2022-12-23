@@ -64,6 +64,40 @@ public class TrabalhadorRecompensas implements Runnable
 		this.running = true;
 	}
 
+	public void adicionarRecompensas(List<Coord> poucoPopuladas, List<Coord> muitoPopuladas)
+	{
+		if (poucoPopuladas.size() != 0)
+		{
+			
+			for (Coord origem : poucoPopuladas)
+			{
+				Coord destino = null;
+				if (muitoPopuladas.size() > 0)
+				{
+					destino = muitoPopuladas.get(0);
+					muitoPopuladas.remove(0);
+				}
+				else
+					do
+					{
+						destino = Coord.randomCoord(this.mapa.getN());
+					} while(!poucoPopuladas.contains(destino));
+				Recompensa recompensa = new Recompensa(origem,destino,this.mapa.getD());
+
+				this.recompensas.addRecompensa(recompensa);
+			}
+		}
+	}
+
+	public void removerRecompensas(List<Coord> poucoPopuladas)
+	{
+		List<Recompensa> lr = this.recompensas.getListaRecompensas();
+	
+		for (Recompensa r : lr)
+			if (!poucoPopuladas.contains(r.getOrigem()) || poucoPopuladas.contains(r.getDestino()))
+				this.recompensas.removeRecompensa(r);
+	}
+
 	/**
 	 * Implementação do método obrigatório da interface {@link Runnable}.
 	 *
@@ -85,28 +119,10 @@ public class TrabalhadorRecompensas implements Runnable
 				long c = this.contador.getContador();
 
 				List<Coord> poucoPopuladas = mapa.zonasPoucoPopuladas();
-				if (poucoPopuladas.size() != 0)
-				{
-					List<Coord> muitoPopuladas = mapa.zonasMuitoPopuladas();
-					
-					for (Coord origem : poucoPopuladas)
-					{
-						Coord destino = null;
-						if (muitoPopuladas.size() > 0)
-						{
-							destino = muitoPopuladas.get(0);
-							muitoPopuladas.remove(0);
-						}
-						else
-							do
-							{
-								destino = Coord.randomCoord(this.mapa.getN());
-							} while(!poucoPopuladas.contains(destino));
-						Recompensa recompensa = new Recompensa(origem,destino,this.mapa.getD());
+				List<Coord> muitoPopuladas = mapa.zonasMuitoPopuladas();
 
-						this.recompensas.addRecompensa(recompensa);
-					}
-				}
+				this.adicionarRecompensas(poucoPopuladas, muitoPopuladas);
+				this.removerRecompensas(poucoPopuladas);
 
 				while (this.running && c == contador.getContador())
 				{
