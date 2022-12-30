@@ -45,12 +45,12 @@ public class GereMensagem implements Runnable{
         try {
             out = new DataOutputStream(new BufferedOutputStream(cs.getOutputStream()));
             in = new DataInputStream(new BufferedInputStream(cs.getInputStream()));
-            while (!(msg = in.readUTF()).equals("EXIT")) {
+            while (!(msg = in.readUTF()).equals("SAIR")) {
                 System.out.println(msg);
                 command(msg);
             }
 
-            out.writeUTF("EXIT");
+            out.writeUTF("SAIR");
             out.flush();
 
         } catch (IOException e) {
@@ -74,7 +74,7 @@ public class GereMensagem implements Runnable{
             case "LOGIN":
                 login(msg);
                 break;
-            case "REGISTER":
+            case "REGISTAR":
                 sign(msg);
                 break;
             case "LOGOUT":
@@ -109,7 +109,7 @@ public class GereMensagem implements Runnable{
         if (this.active_user != null) {
             this.active_user = null;
         }
-        out.writeUTF("LOGGED OUT");
+        out.writeUTF("Fez logout");
         out.flush();
     }
 
@@ -124,15 +124,17 @@ public class GereMensagem implements Runnable{
         String password = (args.length > 2) ? args[2] : ""; // permitir passes vazias
         String user = args[1];
 
-        if (this.users.containsKey(user) && this.users.get(user).verificaPass(password)) {
+		if (!this.users.containsKey(user))
+			out.writeUTF("Acesso Negado. Utilizador não existe!");
+		else if (!this.users.get(user).verificaPass(password))
+			out.writeUTF("Acesso Negado. Password Errada!");
+		else
+		{
             this.active_user = args[1];
 
-            out.writeUTF("GRANTED");
-            out.flush();
-        } else {
-            out.writeUTF("DENIED");
-            out.flush();
+            out.writeUTF("Acesso Permitido!");
         }
+		out.flush();
     }
 
             /**
@@ -146,9 +148,9 @@ public class GereMensagem implements Runnable{
         System.out.println(args[1] + args[2]);
         {
             if (registarUtilizador(args[1], args[2])) {
-                out.writeUTF("USER REGISTERED");
+                out.writeUTF("Utilizador <" + args[1] + "> registado com sucesso!");
             } else {
-                out.writeUTF("USER ALREADY REGISTERED");
+                out.writeUTF("Utilizador <" + args[1] + "> já existe!");
             }
             out.flush();
         } 
@@ -173,11 +175,11 @@ public class GereMensagem implements Runnable{
         int codigoReserva = this.gestorReservas.reservar(c);
 
         if (codigoReserva != -1) {
-            out.writeUTF("SUCCESSFUL RESERVATION WITH RESERVATION CODE: " + codigoReserva);
+            out.writeUTF("Reserva feita com sucesso!\n\tCódigo de reserva: " + codigoReserva);
             out.flush();
         }
         else {
-            out.writeUTF("UNSUCCESSFUL RESERVATION");
+            out.writeUTF("Não foi possível realizar essa reserva!");
             out.flush();
         }
 
@@ -192,12 +194,12 @@ public class GereMensagem implements Runnable{
 	
 		if (valorAPagar >= 0)
 		{
-			out.writeUTF("SUCCESSFUL PARKING, YOU OWE: " + valorAPagar + "€");
+			out.writeUTF("Trotinete Estacionada!.\n\tValor a pagar: " + valorAPagar + "€");
 			out.flush();
 		}
 		else
 		{
-			out.writeUTF("RESERVATION WITH CODE " + codigoReserva + " DOES NOT EXIST");
+			out.writeUTF("Reserva com código: " + codigoReserva + " não existe!");
 			out.flush();
 		}
 	}

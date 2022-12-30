@@ -71,7 +71,7 @@ public class ClienteMenu implements Runnable {
 		
         switch (option) {
             case 0:
-                server_request("EXIT");
+                server_request("SAIR");
                 break;
             case 1:
                 login();
@@ -163,7 +163,7 @@ public class ClienteMenu implements Runnable {
         System.out.print("Password: ");
         password = is.nextLine();
 
-        String result = String.join(";", "REGISTER", username, password);
+        String result = String.join(";", "REGISTAR", username, password);
         this.server_request(result);
 
     }
