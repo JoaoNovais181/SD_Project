@@ -68,7 +68,7 @@ public class ClienteMenu implements Runnable {
      */
     public void menu_one() throws IOException, InterruptedException {
         int option = this.readOpt();
-
+		
         switch (option) {
             case 0:
                 server_request("EXIT");
@@ -90,7 +90,7 @@ public class ClienteMenu implements Runnable {
     /**
      * Método para interpretar a decisão do cliente no menu 2.
      */
-    public void menu_two() { // LOGGED IN
+    public void menu_two() throws IOException { // LOGGED IN
         int option = this.readOpt();
         switch (option) {
             case 0:
@@ -228,7 +228,7 @@ public class ClienteMenu implements Runnable {
      * Método para estacionar uma trotinete.
      */
     public void estacionar() {
-        String cod;
+        String cod, x, y;
         Scanner is = new Scanner(System.in);
 
         System.out.print("Código Reserva: ");
@@ -237,8 +237,17 @@ public class ClienteMenu implements Runnable {
         if (cod.isEmpty())
             return;
 
+
+        System.out.print("X: ");
+        x = is.nextLine();
+        if (x.isEmpty())
+            return;
+
+        System.out.print("Y: ");
+        y = is.nextLine();
+
         try {
-            String result = String.join(";", "Estacionar", cod);
+            String result = String.join(";", "ESTACIONAR", cod, x, y);
             this.server_request(result);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

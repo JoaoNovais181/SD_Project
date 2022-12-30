@@ -22,15 +22,18 @@ public class GereMensagem implements Runnable{
     private DataInputStream in;
     private String active_user;
     private Map<String, Utilizador> users;
-    private Mapa mapa = new Mapa(20,2);
+    private Mapa mapa;
+	private GestorReservas gestorReservas;
     private final ReadWriteLock l = new ReentrantReadWriteLock();
     private final Lock wl = l.writeLock();
     private final Lock rl = l.readLock();
 
-    public GereMensagem(Socket cs) {
+    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas) {
         this.cs = cs;
         this.active_user = null;
         this.users = new HashMap<>();
+		this.mapa = mapa;
+		this.gestorReservas = gestorReservas;
     }
 
     /**
@@ -85,6 +88,7 @@ public class GereMensagem implements Runnable{
             case "LISTARRECOMPENSAS":
                 break;
             case "ESTACIONAR":
+				this.estacionar(msg);
                 break;
             case "NOTIFICAR":
                 break;
@@ -166,10 +170,10 @@ public class GereMensagem implements Runnable{
     private void reserva(String msg) throws IOException {
         String[] args = msg.split(";");
         Coord c = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-        Reserva r = mapa.reservar(c);
+        int codigoReserva = this.gestorReservas.reservar(c);
 
-        if (r.getCodigoRetorno() == 0) {
-            out.writeUTF("SUCCESSFUL RESERVATION");
+        if (codigoReserva != -1) {
+            out.writeUTF("SUCCESSFUL RESERVATION WITH RESERVATION CODE: " + codigoReserva);
             out.flush();
         }
         else {
@@ -179,6 +183,23 @@ public class GereMensagem implements Runnable{
 
     }
 
-
+	private void estacionar(String msg) throws IOException
+	{
+		String[] args = msg.split(";");
+		Coord c = new Coord(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+		int codigoReserva = Integer.parseInt(args[1]);
+		float valorAPagar = this.gestorReservas.estacionar(codigoReserva, c);
+	
+		if (valorAPagar >= 0)
+		{
+			out.writeUTF("SUCCESSFUL PARKING, YOU OWE: " + valorAPagar + "€");
+			out.flush();
+		}
+		else
+		{
+			out.writeUTF("RESERVATION WITH CODE " + codigoReserva + " DOES NOT EXIST");
+			out.flush();
+		}
+	}
 
 }
