@@ -24,18 +24,29 @@ public class ClienteMenu implements Runnable {
         this.cs = cs;
     }
 
+	private void printOpcoes (String titulo, String[] opcoes)
+	{
+		System.out.println("--- " + titulo + " ---");
+		for (String opcao : opcoes)
+			System.out.println(" " + opcao);
+	}
+
     /**
      * Método usado para desenhar os menus.
      */
     public void printmenu() {
         switch (this.menu_status) {
             case 0: // escolher registo/login
-                System.out.println(" 1 - Log In\n 2 - Registar\n 0 - Sair");
+                this.printOpcoes("Menu de Inicio de Sessão", new String[] {"1 - Log In", "2 - Registar", "0 - Sair"});
                 break;
 
             case 1: // tem sessão iniciada
-                System.out.println(
-                        " 1 - Fazer reserva\n 2 - Listar trotinetes livres\n 3 - Listar recompensas\n 4 - Estacionar\n 5 - Notificar\n 0 - Logout");
+                this.printOpcoes("Menu de Inicio de Sessão", new String[] {	"1 - Fazer Reserva", 
+																			"2 - Listar Trotinetes Livres",
+																			"3 - Listar Recompensas",
+																			"4 - Estacionar Trotinete",
+																			"5 - Notificar Recompensas",
+																			"0 - Logout"});
                 break;
 
         }
@@ -311,7 +322,7 @@ public class ClienteMenu implements Runnable {
             while (!this.status.isExited()) {
                 if (this.status.getLogin()){
                     this.menu_status=1;
-                } else if (this.status.getLogin()) this.menu_status = 0;
+                } else if (!this.status.getLogin()) this.menu_status = 0;
                 printmenu();
                 readmenu();
             }

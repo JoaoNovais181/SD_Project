@@ -109,7 +109,7 @@ public class GereMensagem implements Runnable{
         if (this.active_user != null) {
             this.active_user = null;
         }
-        out.writeUTF("Fez logout");
+        out.writeUTF("LOGOUT");
         out.flush();
     }
 
@@ -132,7 +132,7 @@ public class GereMensagem implements Runnable{
 		{
             this.active_user = args[1];
 
-            out.writeUTF("Acesso Permitido!");
+            out.writeUTF("GRANTED");
         }
 		out.flush();
     }

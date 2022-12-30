@@ -27,13 +27,13 @@ public class ClienteReader implements Runnable {
         String[] args;
         try {
             this.in = new DataInputStream(new BufferedInputStream(cs.getInputStream()));
-            while (!(args = (msg = this.in.readUTF()).split(";"))[0].equals("EXIT")) {
+            while (!(args = (msg = this.in.readUTF()).split(";"))[0].equals("SAIR")) {
                 switch (args[0]) {
                     case "GRANTED" -> this.status.login();
-                    case "LOGGED OUT" -> this.status.logout();
+                    case "LOGOUT" -> this.status.logout();
                 }
                 if (args[0].equals("GRANTED")) { // quando dá login
-                    System.out.println(args[0]);
+                    System.out.println("Sessão Iniciada com Sucesso!");
                     this.status.setWaitingOFF();
                 } else if (this.status.getWaiting()) { // está à espera de resposta
                     System.out.println(msg);
