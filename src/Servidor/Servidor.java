@@ -24,12 +24,12 @@ public class Servidor {
 		Condition esperaAcao = lockReservas.newCondition();
 		TrabalhadorRecompensas tr = new TrabalhadorRecompensas(recompensas, mapa, contador, lockReservas, esperaAcao);
 		GestorReservas gr = new GestorReservas(mapa, recompensas, lockReservas);
-        //Map<String,Utilizador> utilizadores = new HashMap<>();
+		Map<String,Utilizador> utilizadores = new HashMap<>();
 
         while(true){
             Socket cs = ss.accept();
             System.out.println("Conexão estabelecida");
-            Thread worker = new Thread(new GereMensagem(cs, mapa, gr));
+            Thread worker = new Thread(new GereMensagem(cs, mapa, gr, utilizadores));
             worker.start();
         }
     }

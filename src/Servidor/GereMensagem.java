@@ -24,14 +24,14 @@ public class GereMensagem implements Runnable{
     private Map<String, Utilizador> users;
     private Mapa mapa;
 	private GestorReservas gestorReservas;
-    private final ReadWriteLock l = new ReentrantReadWriteLock();
-    private final Lock wl = l.writeLock();
-    private final Lock rl = l.readLock();
+	private final ReadWriteLock l = new ReentrantReadWriteLock();
+	private final Lock wl = l.writeLock();
+	private final Lock rl = l.readLock();
 
-    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas) {
+    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, Map<String,Utilizador> utilizadores) {
         this.cs = cs;
         this.active_user = null;
-        this.users = new HashMap<>();
+        this.users = utilizadores;
 		this.mapa = mapa;
 		this.gestorReservas = gestorReservas;
     }
@@ -157,15 +157,11 @@ public class GereMensagem implements Runnable{
     }
 
     public boolean registarUtilizador(String user, String password) {
-        wl.lock();
-        try {
-            if (!this.users.containsKey(user)) {
-                this.users.put(user, new Utilizador(user, password));
-                return true;
-            }else return false;
-        } finally {
-            wl.unlock();
-        }
+		if (!this.users.containsKey(user)) {
+			this.users.put(user, new Utilizador(user, password));
+			return true;
+		}
+		else return false;
     }
 
 
