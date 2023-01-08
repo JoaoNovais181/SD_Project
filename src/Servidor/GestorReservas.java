@@ -1,23 +1,12 @@
 package Servidor;
 
-import Servidor.Reserva;
-import Servidor.Mapa;
-import Servidor.ListaRecompensas;
-import Servidor.Coord;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class GestorReservas
 {
-	/**
-	 * Variavel estática que conta o número de reservas, usado para dar um código de reserva
-	 * */
-	private static int contagemReservas = 0;
-
 	private final static float percentagemRecompensa = 0.25f;
 	private final static float IVA = 0.23f;
 	private final static float precoPorUD = 0.5f;
@@ -26,14 +15,16 @@ public class GestorReservas
 	private Mapa mapa;	
 	private Map<Integer, Reserva> reservas;
 	private ListaRecompensas listaRecompensas;
-	private ReentrantLock lock;
+	private LockReservas lock;
+	private Contador contador;
 
-	public GestorReservas(Mapa mapa, ListaRecompensas listaRecompensas, ReentrantLock lock)
+	public GestorReservas(Mapa mapa, ListaRecompensas listaRecompensas)
 	{
 		this.mapa = mapa;
 		this.listaRecompensas = listaRecompensas;
 		this.reservas = new HashMap<>();
-		this.lock = lock;
+		this.lock = LockReservas.getInstance();
+		this.contador = Contador.getInstance();
 	}
 
 	public int reservar(Coord coord)
@@ -43,11 +34,13 @@ public class GestorReservas
 			return -1;
 
 		Reserva r; 
-		this.lock.lock();
 		try
 		{
-			r = new Reserva(contagemReservas++, localReserva);
+			this.lock.lock();
+			r = new Reserva((int)this.contador.getContador(), localReserva);
+			this.contador.incrementar();
 			this.reservas.put(r.getCodigoReserva(), r);
+			this.lock.sinalizaAcao();
 		}
 		finally { this.lock.unlock(); }
 
@@ -65,6 +58,8 @@ public class GestorReservas
 				return -1;
 
 			this.mapa.estacionar(coord);
+			this.contador.incrementar();
+			this.lock.sinalizaAcao();;
 
 			Coord inicio = r.getLocalReserva();
 

@@ -2,7 +2,6 @@ package Servidor;
 
 import java.util.List;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementação de uma classe a ser usada numa thread, que será gerida por um {@link Servidor},
@@ -37,13 +36,7 @@ public class TrabalhadorRecompensas implements Runnable
 	/**
 	 * {@code Lock} usado para garantir a exclusão mútua no que toca às reservas
 	 * */
-	private ReentrantLock lockReservas;
-
-	/**
-	 * {@code Condition} usada para colocar a {@code Thread} em espera enquanto não ocorrer nenhuma reserva 
-	 * ou estacionamento de uma trotinete
-	 * */
-	private Condition esperaAcao;
+	private LockReservas lock;
 
 	/**
 	 * Variável usada para ditar se a thread deve continuar o seu trabalho ou não
@@ -54,13 +47,12 @@ public class TrabalhadorRecompensas implements Runnable
 	 * Constrói um objeto deste tipo, recebendo uma {@link ListaRecompensas}, um {@link Mapa}, um {@link Contador},
 	 * {@link ReentrantLock} e {@link Condition}, e inicializando a sua variável {@code running} como true
 	 * */
-	public TrabalhadorRecompensas (ListaRecompensas recompensas, Mapa mapa, Contador contador, ReentrantLock lockReservas, Condition esperaAcao)
+	public TrabalhadorRecompensas (ListaRecompensas recompensas, Mapa mapa)
 	{
 		this.recompensas = recompensas;
 		this.mapa = mapa;
-		this.contador = contador;
-		this.lockReservas = lockReservas;
-		this.esperaAcao = esperaAcao;
+		this.contador = Contador.getInstance();
+		this.lock = LockReservas.getInstance();
 		this.running = true;
 	}
 
@@ -81,7 +73,7 @@ public class TrabalhadorRecompensas implements Runnable
 					do
 					{
 						destino = Coord.randomCoord(this.mapa.getN());
-					} while(!poucoPopuladas.contains(destino));
+					} while(poucoPopuladas.contains(destino));
 				Recompensa recompensa = new Recompensa(origem,destino,this.mapa.getD());
 
 				this.recompensas.addRecompensa(recompensa);
@@ -111,7 +103,7 @@ public class TrabalhadorRecompensas implements Runnable
 	 * */
 	public void run()
 	{
-		this.lockReservas.lock();
+		this.lock.lock();
 		try
 		{
 			while (this.running)
@@ -123,10 +115,10 @@ public class TrabalhadorRecompensas implements Runnable
 
 				this.adicionarRecompensas(poucoPopuladas, muitoPopuladas);
 				this.removerRecompensas(poucoPopuladas);
-
+				
 				while (this.running && c == contador.getContador())
 				{
-					this.esperaAcao.await();;
+					this.lock.esperaAcao();
 				}
 			}
 		}
@@ -134,7 +126,7 @@ public class TrabalhadorRecompensas implements Runnable
 		{
 			e.printStackTrace();
 		}
-		finally { this.lockReservas.unlock(); }
+		finally { this.lock.unlock(); }
 	}
 
 	/**

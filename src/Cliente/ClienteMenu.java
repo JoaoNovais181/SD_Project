@@ -234,6 +234,9 @@ public class ClienteMenu implements Runnable {
         System.out.print(" Y: ");
         y = is.nextLine();
 
+        if (y.isEmpty())
+            return;
+
         try {
             String result = String.join(";", "LISTARTROTINETES",x,y);
             this.server_request(result);

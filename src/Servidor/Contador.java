@@ -27,13 +27,23 @@ public class Contador
 	 * */
 	private ReentrantLock lock;
 
+	private static Contador singleton = null;	
+
 	/**
 	 * Constroi um contador, começando-o a 0
 	 * */
-	public Contador()
+	private Contador()
 	{
 		this.contador = 0;
 		this.lock = new ReentrantLock();
+	}
+
+	public static Contador getInstance()
+	{
+		if (Contador.singleton == null)
+			Contador.singleton = new Contador();
+
+		return Contador.singleton;
 	}
 
 	/**

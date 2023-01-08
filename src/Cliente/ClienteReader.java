@@ -35,7 +35,16 @@ public class ClienteReader implements Runnable {
                 if (args[0].equals("GRANTED")) { // quando dá login
                     System.out.println("Sessão Iniciada com Sucesso!");
                     this.status.setWaitingOFF();
-                } else if (this.status.getWaiting()) { // está à espera de resposta
+                } else if (args[0].equals("LISTARRECOMPENSAS")){
+					System.out.println("HELLOOOOO");
+					int nr = in.readInt();
+					System.out.println("Lista de recompensas:");
+					for (int i=0 ; i<nr ; i++)
+					{
+						System.out.println(" " + in.readUTF());
+					}
+					this.status.setWaitingOFF();
+				}else if (this.status.getWaiting()) { // está à espera de resposta
                     System.out.println(msg);
                     this.status.setWaitingOFF();
                 } else { // mensagens do servidor só

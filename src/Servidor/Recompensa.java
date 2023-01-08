@@ -105,6 +105,6 @@ public class Recompensa
 	@Override
 	public String toString()
 	{
-		return this.origem.toString() + "->" + this.destino.toString();
+		return "Recompensa de " + this.destino.toString() + " - para -> " + this.origem.toString();
 	}
 }

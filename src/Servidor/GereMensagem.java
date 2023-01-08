@@ -3,19 +3,13 @@ package Servidor;
 //import Exceptions.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReadWriteLock;
 
 public class GereMensagem implements Runnable{
     private Socket cs;
@@ -25,16 +19,15 @@ public class GereMensagem implements Runnable{
     private Map<String, Utilizador> users;
     private Mapa mapa;
 	private GestorReservas gestorReservas;
-	private final ReadWriteLock l = new ReentrantReadWriteLock();
-	private final Lock wl = l.writeLock();
-	private final Lock rl = l.readLock();
+	private ListaRecompensas listaRecompensas;
 
-    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, Map<String,Utilizador> utilizadores) {
+    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, ListaRecompensas listaRecompensas) {
         this.cs = cs;
         this.active_user = null;
-        this.users = utilizadores;
+        this.users = ListaUtilizadores.getInstance();
 		this.mapa = mapa;
 		this.gestorReservas = gestorReservas;
+		this.listaRecompensas = listaRecompensas;
     }
 
     /**
@@ -57,7 +50,7 @@ public class GereMensagem implements Runnable{
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(" sair");
+        System.out.println("sair");
 
 
     }
@@ -88,6 +81,7 @@ public class GereMensagem implements Runnable{
                 listarTrot(msg);
                 break;
             case "LISTARRECOMPENSAS":
+				this.listarRecompensas(msg);
                 break;
             case "ESTACIONAR":
 				this.estacionar(msg);
@@ -127,9 +121,9 @@ public class GereMensagem implements Runnable{
         String user = args[1];
 
 		if (!this.users.containsKey(user))
-			out.writeUTF(" Acesso Negado. Utilizador não existe!");
+			out.writeUTF("Acesso Negado. Utilizador não existe!");
 		else if (!this.users.get(user).verificaPass(password))
-			out.writeUTF(" Acesso Negado. Password Errada!");
+			out.writeUTF("Acesso Negado. Password Errada!");
 		else
 		{
             this.active_user = args[1];
@@ -150,9 +144,9 @@ public class GereMensagem implements Runnable{
         System.out.println(args[1] + args[2]);
         {
             if (registarUtilizador(args[1], args[2])) {
-                out.writeUTF(" Utilizador <" + args[1] + "> registado com sucesso!");
+                out.writeUTF("Utilizador <" + args[1] + "> registado com sucesso!");
             } else {
-                out.writeUTF(" Utilizador <" + args[1] + "> já existe!");
+                out.writeUTF("Utilizador <" + args[1] + "> já existe!");
             }
             out.flush();
         } 
@@ -173,40 +167,15 @@ public class GereMensagem implements Runnable{
         int codigoReserva = this.gestorReservas.reservar(c);
 
         if (codigoReserva != -1) {
-            out.writeUTF(" Reserva feita com sucesso!\n\tCódigo de reserva: " + codigoReserva);
+            out.writeUTF("Reserva feita com sucesso!\n\tCódigo de reserva: " + codigoReserva);
             out.flush();
         }
         else {
-            out.writeUTF(" Não foi possível realizar essa reserva!");
+            out.writeUTF("Não foi possível realizar essa reserva!");
             out.flush();
         }
-
     }
 
-
-    /**
-     * Método reponsável por estacionar uma trotinete.
-     *
-     * @param msg Pedido ao servidor.
-     */
-	private void estacionar(String msg) throws IOException
-	{
-		String[] args = msg.split(";");
-		Coord c = new Coord(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-		int codigoReserva = Integer.parseInt(args[1]);
-		float valorAPagar = this.gestorReservas.estacionar(codigoReserva, c);
-	
-		if (valorAPagar >= 0)
-		{
-			out.writeUTF(" Trotinete Estacionada!.\n\tValor a pagar: " + valorAPagar + "€.");
-			out.flush();
-		}
-		else
-		{
-			out.writeUTF(" Reserva com código: " + codigoReserva + " não existe!\n");
-			out.flush();
-		}
-	}
 
     private void listarTrot(String msg) throws IOException{
         String[] args = msg.split(";");
@@ -217,7 +186,7 @@ public class GereMensagem implements Runnable{
             List<Coord> coordTrot = this.mapa.coordTrotinetesVizinhanca(c);
             StringBuilder s = new StringBuilder();
             for (Coord ct : coordTrot) {
-                s.append(" ").append(ct.toString()).append("; ");
+                s.append(" ").append(ct.toString()).append(" ");
             }
             out.writeUTF(" Existem " + nTrots + " trotinetes livres na tua zona!\n Coordenadas das trotinetes: " + s + '\n');
             out.flush();
@@ -228,7 +197,40 @@ public class GereMensagem implements Runnable{
 
     }
 
+	private void listarRecompensas(String msg) throws IOException
+	{
+		String[] args = msg.split(";");
+		Coord coord = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+		List<Recompensa> lr = new ArrayList<>();
+		for (Recompensa r : this.listaRecompensas.getListaRecompensas())
+			if (r.getOrigem().DistanceTo(coord) < this.mapa.getD())
+				lr.add(r);
+		out.writeUTF("LISTARRECOMPENSAS");
+		out.writeInt(lr.size());
+		for (Recompensa r : lr)
+		{
+			out.writeUTF(r.toString());
+		}
+		out.flush();
+	}
 
-
+	private void estacionar(String msg) throws IOException
+	{
+		String[] args = msg.split(";");
+		Coord c = new Coord(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+		int codigoReserva = Integer.parseInt(args[1]);
+		float valorAPagar = this.gestorReservas.estacionar(codigoReserva, c);
+	
+		if (valorAPagar >= 0)
+		{
+			out.writeUTF("Trotinete Estacionada!.\n\tValor a pagar: " + valorAPagar + "€");
+			out.flush();
+		}
+		else
+		{
+			out.writeUTF("Reserva com código: " + codigoReserva + " não existe!");
+			out.flush();
+		}
+	}
 
 }

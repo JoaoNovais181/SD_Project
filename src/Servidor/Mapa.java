@@ -1,7 +1,5 @@
 package Servidor;
 
-import org.w3c.dom.ls.LSException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -157,9 +155,9 @@ public class Mapa
 
 			if (localReserva != null)
 				this.mapa[localReserva.getY()][localReserva.getX()]--;
-			return localReserva;
 		}
 		finally { this.lock.writeLock().unlock(); }
+		return localReserva;
 	}
 
 	/**
@@ -249,7 +247,6 @@ public class Mapa
 		}
 		finally { this.lock.readLock().unlock(); }
 	}
-
 	
 	/**
 	 * Retorna uma lista com todas as zonas pouco populadas, isto é,
@@ -300,7 +297,7 @@ public class Mapa
 	/**
 	 * Função usada para pretty print do mapa
 	 *
-	 * @param  witdth  largura total onde se quer colocar {@code str}
+	 * @param  witdh  largura total onde se quer colocar {@code str}
 	 * @param  padStr  {@link String} a colocar à esquerda de {@code str}
 	 * @param  str  {@link String} a colocar a direita
 	 *
