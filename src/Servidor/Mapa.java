@@ -1,5 +1,7 @@
 package Servidor;
 
+import org.w3c.dom.ls.LSException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -205,6 +207,49 @@ public class Mapa
 		}
 		finally { this.lock.readLock().unlock(); }	
 	}
+
+	public List<Coord> coordTrotinetesVizinhanca(Coord coord){
+
+		int xCentral = coord.getX(), yCentral = coord.getY();
+		List<Coord> coordTr = new ArrayList<>();
+
+		int xInicio = xCentral - (int)this.D - 1;
+		while (xInicio < 0)
+			xInicio++;
+		int xFinal = xCentral + (int)this.D + 1;
+		while (xFinal >= this.N)
+			xFinal--;
+
+		int yInicio = yCentral - (int)this.D - 1;
+		while (yInicio < 0)
+			yInicio++;
+		int yFinal = yCentral + (int)this.D + 1;
+		while (yFinal >= this.N)
+			yFinal--;
+
+		this.lock.readLock().lock();
+		try
+		{
+			if(this.mapa[yCentral][xCentral] > 0)
+				coordTr.add(new Coord(xCentral,yCentral));
+			for (int y = yInicio ; y<=yFinal ; y++)
+			{
+				for (int x = xInicio ; x<=xFinal ; x++)
+				{
+					if (coord.DistanceTo(new Coord(x, y)) <= this.D)
+					{
+						for(int i = 0; i < this.mapa[y][x]; i++)
+							coordTr.add(new Coord(x, y));
+
+					}
+				}
+			}
+
+			return coordTr;
+		}
+		finally { this.lock.readLock().unlock(); }
+	}
+
 	
 	/**
 	 * Retorna uma lista com todas as zonas pouco populadas, isto é,
@@ -255,7 +300,7 @@ public class Mapa
 	/**
 	 * Função usada para pretty print do mapa
 	 *
-	 * @param  witdh  largura total onde se quer colocar {@code str}
+	 * @param  witdth  largura total onde se quer colocar {@code str}
 	 * @param  padStr  {@link String} a colocar à esquerda de {@code str}
 	 * @param  str  {@link String} a colocar a direita
 	 *

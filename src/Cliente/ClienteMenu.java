@@ -26,9 +26,15 @@ public class ClienteMenu implements Runnable {
 
 	private void printOpcoes (String titulo, String[] opcoes)
 	{
-		System.out.println("--- " + titulo + " ---");
+		System.out.println("----------------------------");
+        System.out.println("  " + titulo + "        ");
+        System.out.println("----------------------------");
+
 		for (String opcao : opcoes)
-			System.out.println(" " + opcao);
+			System.out.println(opcao);
+
+        System.out.println("----------------------------");
+        System.out.print(" Opção: ");
 	}
 
     /**
@@ -37,16 +43,16 @@ public class ClienteMenu implements Runnable {
     public void printmenu() {
         switch (this.menu_status) {
             case 0: // escolher registo/login
-                this.printOpcoes("Menu de Inicio de Sessão", new String[] {"1 - Log In", "2 - Registar", "0 - Sair"});
+                this.printOpcoes("Menu de Inicio de Sessão", new String[] {" 1 | Log In", " 2 | Registar", " 0 | Sair"});
                 break;
 
             case 1: // tem sessão iniciada
-                this.printOpcoes("Menu de Inicio de Sessão", new String[] {	"1 - Fazer Reserva", 
-																			"2 - Listar Trotinetes Livres",
-																			"3 - Listar Recompensas",
-																			"4 - Estacionar Trotinete",
-																			"5 - Notificar Recompensas",
-																			"0 - Logout"});
+                this.printOpcoes("Menu de Inicio de Sessão", new String[] {	" 1 | Fazer Reserva",
+																			" 2 | Listar Trotinetes Livres",
+																			" 3 | Listar Recompensas",
+																			" 4 | Estacionar Trotinete",
+																			" 5 | Notificar Recompensas",
+																			" 0 | Logout"});
                 break;
 
         }
@@ -91,7 +97,7 @@ public class ClienteMenu implements Runnable {
                 signup();
                 break;
             default: {
-                System.out.println("Opção inválida. Escolha uma nova opção:");
+                System.out.print(" Opção inválida!\n Escolha uma nova opção: ");
                 menu_one();
                 break;
             }
@@ -123,7 +129,7 @@ public class ClienteMenu implements Runnable {
                 notificar();
                 break;
             default: {
-                System.out.println("Opção inválida. Escolha uma nova opção:");
+                System.out.print("Opção inválida. Escolha uma nova opção: ");
                 menu_two();
             }
         }
@@ -139,12 +145,12 @@ public class ClienteMenu implements Runnable {
         String username, password;
         Scanner is = new Scanner(System.in);
 
-        System.out.print("Username: ");
+        System.out.print(" Username: ");
         username = is.nextLine();
         if (username.isEmpty())
             return;
 
-        System.out.print("Password: ");
+        System.out.print(" Password: ");
         password = is.nextLine();
 
         String result = String.join(";", "LOGIN", username, password);
@@ -166,12 +172,12 @@ public class ClienteMenu implements Runnable {
         String username, password;
         Scanner is = new Scanner(System.in);
 
-        System.out.print("Username: ");
+        System.out.print(" Username: ");
         username = is.nextLine();
         if (username.isEmpty())
             return;
 
-        System.out.print("Password: ");
+        System.out.print(" Password: ");
         password = is.nextLine();
 
         String result = String.join(";", "REGISTAR", username, password);
@@ -198,7 +204,7 @@ public class ClienteMenu implements Runnable {
         String x,y;
         Scanner is = new Scanner(System.in);
 
-        System.out.print("X: ");
+        System.out.print(" X: ");
         x = is.nextLine();
         if (x.isEmpty())
             return;
@@ -217,22 +223,47 @@ public class ClienteMenu implements Runnable {
      * Método para apresentar todas as trotinetes livres.
      */
     public void listartrotinetes() {
-        /*try {
+        String x,y;
+        Scanner is = new Scanner(System.in);
 
+        System.out.print(" X: ");
+        x = is.nextLine();
+        if (x.isEmpty())
+            return;
+
+        System.out.print(" Y: ");
+        y = is.nextLine();
+
+        try {
+            String result = String.join(";", "LISTARTROTINETES",x,y);
+            this.server_request(result);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     /**
      * Método para listar as recompensas disponiveis.
      */
     public void listarrecompensas() {
-        /*try {
+        String x,y;
+        Scanner is = new Scanner(System.in);
 
+        System.out.print("X: ");
+        x = is.nextLine();
+        if (x.isEmpty())
+            return;
+
+
+        System.out.print("Y: ");
+        y = is.nextLine();
+
+        try {
+            String result = String.join(";", "LISTARRECOMPENSAS",x,y);
+            server_request(result);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     /**
@@ -305,7 +336,7 @@ public class ClienteMenu implements Runnable {
                 option = Integer.parseInt(msg);
                 valid = true;
             } catch (NumberFormatException e) {
-                System.out.println("Input inválido. Insira um dígito.\n");
+                System.out.print(" Input inválido! Insira um dígito.\n Opção: ");
             }
         }
 
@@ -326,9 +357,9 @@ public class ClienteMenu implements Runnable {
                 printmenu();
                 readmenu();
             }
-            System.out.println("Exiting");
+            System.out.println(" Saindo...");
         } catch (IOException | InterruptedException e) {
-            System.out.println("error");
+            System.out.print("error ");
             e.printStackTrace();
 
         }
