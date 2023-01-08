@@ -303,11 +303,25 @@ public class ClienteMenu implements Runnable {
      * Método para notificar sobre recompensas.
      */
     public void notificar() {
-        /*try {
+        String x, y;
+        Scanner is = new Scanner(System.in);
 
+        System.out.print("X: ");
+        x = is.nextLine();
+        if (x.isEmpty())
+            return;
+
+        System.out.print("Y: ");
+        y = is.nextLine();
+        if (x.isEmpty())
+            return;
+
+        try {
+            String result = String.join(";", "NOTIFICAR", x, y);
+            this.server_request(result);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     /**

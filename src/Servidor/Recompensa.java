@@ -63,6 +63,16 @@ public class Recompensa
 		return this.origem.equals(inicio) || this.destino.equals(fim);
 	}
 
+	public boolean mesmoDestino(Coord destino)
+	{
+		return this.destino.equals(destino);
+	}
+
+	public boolean destinoPerto(Coord destino)
+	{
+		return this.destino.DistanceTo(destino) <= this.D;
+	}
+
 	/**
 	 * Método usado para verificar se um par de coordenadas é elegível para uma recompensa,
 	 * isto é, se a coordenada de início está a menos que D de distância da coordenada
@@ -105,6 +115,6 @@ public class Recompensa
 	@Override
 	public String toString()
 	{
-		return "Recompensa de " + this.destino.toString() + " - para -> " + this.origem.toString();
+		return "Recompensa de " + this.origem.toString() + " - para -> " + this.destino.toString();
 	}
 }

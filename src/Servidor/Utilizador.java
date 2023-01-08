@@ -1,8 +1,16 @@
 package Servidor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Utilizador {
     private final String username;
     private final String password;
+
+	private Lock lock;
+	private List<Coord> notificar;
 
     /*
         Construtor da class Utilizador
@@ -13,7 +21,44 @@ public class Utilizador {
     public Utilizador(String user, String pass){
         this.username = user;
         this.password = pass;
-    }
+		this.notificar = new ArrayList<>();
+		this.lock = new ReentrantLock();
+	}
+
+	public boolean addNotificar(Coord coord)
+	{
+		this.lock.lock();
+		try
+		{
+			if (!this.notificar.contains(coord))
+				this.notificar.add(coord);
+			else
+				return false;
+			return true;
+		} 
+		finally { this.lock.unlock(); }
+	}
+
+	public void removeNotificar(Coord coord)
+	{
+		this.lock.lock();
+		try
+		{
+			if (this.notificar.contains(coord))
+				this.notificar.remove(coord);
+		}
+		finally { this.lock.unlock(); }
+	}
+
+	public List<Coord> getNotificar()
+	{
+		this.lock.lock();
+		try
+		{
+			return new ArrayList<>(this.notificar);
+		}
+		finally { this.lock.unlock(); }
+	}
 
     public String getUsername(){
         return this.username;

@@ -20,6 +20,7 @@ public class GereMensagem implements Runnable{
     private Mapa mapa;
 	private GestorReservas gestorReservas;
 	private ListaRecompensas listaRecompensas;
+	private TrabalhadorNotificacoes tn;
 
     public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, ListaRecompensas listaRecompensas) {
         this.cs = cs;
@@ -28,6 +29,7 @@ public class GereMensagem implements Runnable{
 		this.mapa = mapa;
 		this.gestorReservas = gestorReservas;
 		this.listaRecompensas = listaRecompensas;
+		this.tn = null;
     }
 
     /**
@@ -52,6 +54,8 @@ public class GereMensagem implements Runnable{
         }
         System.out.println("sair");
 
+		if (this.tn != null)
+			this.tn.shutdown();
 
     }
 
@@ -87,6 +91,7 @@ public class GereMensagem implements Runnable{
 				this.estacionar(msg);
                 break;
             case "NOTIFICAR":
+				this.notificar(msg);
                 break;
             default: {
                 this.out.writeUTF("Erro");
@@ -129,6 +134,10 @@ public class GereMensagem implements Runnable{
             this.active_user = args[1];
 
             out.writeUTF("GRANTED");
+
+			this.tn = new TrabalhadorNotificacoes(out, listaRecompensas, this.users.get(this.active_user));
+			Thread t = new Thread(tn, "Notificador de " + this.active_user);
+			t.start();
         }
 		out.flush();
     }
@@ -203,7 +212,7 @@ public class GereMensagem implements Runnable{
 		Coord coord = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 		List<Recompensa> lr = new ArrayList<>();
 		for (Recompensa r : this.listaRecompensas.getListaRecompensas())
-			if (r.getOrigem().DistanceTo(coord) < this.mapa.getD())
+			if (r.getDestino().DistanceTo(coord) <= this.mapa.getD())
 				lr.add(r);
 		out.writeUTF("LISTARRECOMPENSAS");
 		out.writeInt(lr.size());
@@ -231,6 +240,20 @@ public class GereMensagem implements Runnable{
 			out.writeUTF("Reserva com código: " + codigoReserva + " não existe!");
 			out.flush();
 		}
+	}
+
+	private void notificar(String msg) throws IOException
+	{
+		String[] args = msg.split(";");
+		Coord coord = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+		if (this.users.get(this.active_user).addNotificar(coord))
+			out.writeUTF("Pedido de Notificacao Adicionado");
+		else
+		{
+			this.users.get(this.active_user).removeNotificar(coord);
+			out.writeUTF("Pedido de Notificacao Removido");
+		}
+		out.flush();
 	}
 
 }

@@ -60,12 +60,12 @@ public class ListaRecompensas
 	public boolean addRecompensa(Recompensa r)
 	{
 		boolean possivel = true;
-		Coord origem = r.getOrigem(), destino = r.getDestino();
+		Coord destino = r.getDestino();
 		this.lock.writeLock().lock();
 		try
 		{
 			for (Recompensa recompensa : this.recompensas)
-				if (recompensa.coordsIguais(origem, destino))
+				if (recompensa.mesmoDestino(destino))
 					possivel = false;
 
 			if (possivel)
@@ -111,6 +111,18 @@ public class ListaRecompensas
 		finally { this.lock.readLock().unlock(); }
 	}
 
+	public boolean destinoPerto(Coord destino)
+	{
+		this.lock.readLock().lock();
+		try
+		{
+			for (Recompensa r : this.recompensas)
+				if (r.destinoPerto(destino))
+					return true;
+			return false;
+		}
+		finally { this.lock.readLock().unlock(); }
+	}
 
 	public List<Recompensa> getListaRecompensas()
 	{

@@ -19,6 +19,13 @@ public class ClienteReader implements Runnable {
         this.status = status;
     }
 
+	private String center(int width, String padStr, String str)
+	{
+		int n = width - str.length();
+		if (n==0) return str;
+		return String.format("%0" + n/2 + "d" + "%s%0" + (n/2 + n%2) + "d", 0, str, 0).replace("0", padStr);
+	}
+
     /**
      * Método para ser executado pela thread.
      */
@@ -38,11 +45,15 @@ public class ClienteReader implements Runnable {
                 } else if (args[0].equals("LISTARRECOMPENSAS")){
 					System.out.println("HELLOOOOO");
 					int nr = in.readInt();
-					System.out.println("Lista de recompensas:");
+					int n = 56;
+					System.out.println("┌" + center(n,"─","") + "┐");
+					String titulo = "Lista de Recompensas";
+					System.out.println("│" + center(n, " ", titulo) + "│" + "\n" + "├" + center(n, "─", "") + "┤");
 					for (int i=0 ; i<nr ; i++)
 					{
-						System.out.println(" " + in.readUTF());
+						System.out.println("│" + center(n, " " , in.readUTF()) + "│");
 					}
+					System.out.println("└" + center(n,"─","") + "┘");
 					this.status.setWaitingOFF();
 				}else if (this.status.getWaiting()) { // está à espera de resposta
                     System.out.println(msg);

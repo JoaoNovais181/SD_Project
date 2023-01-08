@@ -61,19 +61,19 @@ public class TrabalhadorRecompensas implements Runnable
 		if (poucoPopuladas.size() != 0)
 		{
 			
-			for (Coord origem : poucoPopuladas)
+			for (Coord destino : poucoPopuladas)
 			{
-				Coord destino = null;
+				Coord origem = null;
 				if (muitoPopuladas.size() > 0)
 				{
-					destino = muitoPopuladas.get(0);
+					origem = muitoPopuladas.get(0);
 					muitoPopuladas.remove(0);
 				}
 				else
 					do
 					{
-						destino = Coord.randomCoord(this.mapa.getN());
-					} while(poucoPopuladas.contains(destino));
+						origem = Coord.randomCoord(this.mapa.getN());
+					} while(poucoPopuladas.contains(origem));
 				Recompensa recompensa = new Recompensa(origem,destino,this.mapa.getD());
 
 				this.recompensas.addRecompensa(recompensa);
@@ -86,7 +86,7 @@ public class TrabalhadorRecompensas implements Runnable
 		List<Recompensa> lr = this.recompensas.getListaRecompensas();
 	
 		for (Recompensa r : lr)
-			if (!poucoPopuladas.contains(r.getOrigem()) || poucoPopuladas.contains(r.getDestino()))
+			if (!poucoPopuladas.contains(r.getDestino()) || poucoPopuladas.contains(r.getOrigem()))
 				this.recompensas.removeRecompensa(r);
 	}
 
@@ -115,6 +115,7 @@ public class TrabalhadorRecompensas implements Runnable
 
 				this.adicionarRecompensas(poucoPopuladas, muitoPopuladas);
 				this.removerRecompensas(poucoPopuladas);
+				System.out.println(this.recompensas.toString() + poucoPopuladas +  muitoPopuladas);
 				
 				while (this.running && c == contador.getContador())
 				{
