@@ -55,6 +55,8 @@ public class ClienteReader implements Runnable {
 					}
 					System.out.println("└" + center(n,"─","") + "┘");
 					this.status.setWaitingOFF();
+				}else if (args[0].equals("NOTIFICACAO")){
+					System.out.print("\nNOTIFICACAO: " + args[1] + "\nContinue:");
 				}else if (this.status.getWaiting()) { // está à espera de resposta
                     System.out.println(msg);
                     this.status.setWaitingOFF();

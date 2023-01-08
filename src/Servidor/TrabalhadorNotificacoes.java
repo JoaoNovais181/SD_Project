@@ -35,8 +35,9 @@ public class TrabalhadorNotificacoes implements Runnable
 					if (this.recompensas.destinoPerto(c))
 					{
 						System.out.println("OIEEE" + c);
-						out.writeUTF("Recompensa perto de " + c.toString());
+						out.writeUTF("NOTIFICACAO;Recompensa perto de " + c.toString());
 						out.flush();
+						u.removeNotificar(c);
 					}
 
 				this.lock.esperaAcao();
