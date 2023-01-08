@@ -19,13 +19,6 @@ public class ClienteReader implements Runnable {
         this.status = status;
     }
 
-	private String center(int width, String padStr, String str)
-	{
-		int n = width - str.length();
-		if (n==0) return str;
-		return String.format("%0" + n/2 + "d" + "%s%0" + (n/2 + n%2) + "d", 0, str, 0).replace("0", padStr);
-	}
-
     /**
      * Método para ser executado pela thread.
      */
@@ -43,17 +36,16 @@ public class ClienteReader implements Runnable {
                     System.out.println("Sessão Iniciada com Sucesso!");
                     this.status.setWaitingOFF();
                 } else if (args[0].equals("LISTARRECOMPENSAS")){
-					System.out.println("HELLOOOOO");
 					int nr = in.readInt();
 					int n = 56;
-					System.out.println("┌" + center(n,"─","") + "┐");
+					System.out.println("┌" + ClienteMenu.center(n,"─","") + "┐");
 					String titulo = "Lista de Recompensas";
-					System.out.println("│" + center(n, " ", titulo) + "│" + "\n" + "├" + center(n, "─", "") + "┤");
+					System.out.println("│" + ClienteMenu.center(n, " ", titulo) + "│" + "\n" + "├" + ClienteMenu.center(n, "─", "") + "┤");
 					for (int i=0 ; i<nr ; i++)
 					{
-						System.out.println("│" + center(n, " " , in.readUTF()) + "│");
+						System.out.println("│" + ClienteMenu.center(n, " " , in.readUTF()) + "│");
 					}
-					System.out.println("└" + center(n,"─","") + "┘");
+					System.out.println("└" + ClienteMenu.center(n,"─","") + "┘");
 					this.status.setWaitingOFF();
 				}else if (args[0].equals("NOTIFICACAO")){
 					System.out.print("\nNOTIFICACAO: " + args[1] + "\nContinue:");

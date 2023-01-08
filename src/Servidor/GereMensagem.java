@@ -21,8 +21,9 @@ public class GereMensagem implements Runnable{
 	private GestorReservas gestorReservas;
 	private ListaRecompensas listaRecompensas;
 	private TrabalhadorNotificacoes tn;
+	private final boolean debug;
 
-    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, ListaRecompensas listaRecompensas) {
+    public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, ListaRecompensas listaRecompensas, boolean debug) {
         this.cs = cs;
         this.active_user = null;
         this.users = ListaUtilizadores.getInstance();
@@ -30,6 +31,7 @@ public class GereMensagem implements Runnable{
 		this.gestorReservas = gestorReservas;
 		this.listaRecompensas = listaRecompensas;
 		this.tn = null;
+		this.debug = debug;
     }
 
     /**
@@ -42,7 +44,8 @@ public class GereMensagem implements Runnable{
             out = new DataOutputStream(new BufferedOutputStream(cs.getOutputStream()));
             in = new DataInputStream(new BufferedInputStream(cs.getInputStream()));
             while (!(msg = in.readUTF()).equals("SAIR")) {
-                System.out.println(msg);
+                if (this.debug)
+					System.out.println(msg);
                 command(msg);
             }
 
@@ -52,7 +55,8 @@ public class GereMensagem implements Runnable{
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("sair");
+		if (this.debug)
+			System.out.println("sair");
 
 		if (this.tn != null)
 			this.tn.shutdown();
@@ -150,15 +154,12 @@ public class GereMensagem implements Runnable{
     private void sign(String msg) throws IOException {
 
         String[] args = msg.split(";");
-        System.out.println(args[1] + args[2]);
-        {
-            if (registarUtilizador(args[1], args[2])) {
-                out.writeUTF("Utilizador <" + args[1] + "> registado com sucesso!");
-            } else {
-                out.writeUTF("Utilizador <" + args[1] + "> já existe!");
-            }
-            out.flush();
-        } 
+		if (registarUtilizador(args[1], args[2])) {
+			out.writeUTF("Utilizador <" + args[1] + "> registado com sucesso!");
+		} else {
+			out.writeUTF("Utilizador <" + args[1] + "> já existe!");
+		}
+		out.flush();
     }
 
     public boolean registarUtilizador(String user, String password) {
@@ -228,11 +229,12 @@ public class GereMensagem implements Runnable{
 		String[] args = msg.split(";");
 		Coord c = new Coord(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 		int codigoReserva = Integer.parseInt(args[1]);
-		float valorAPagar = this.gestorReservas.estacionar(codigoReserva, c);
+		float[] resposta = this.gestorReservas.estacionar(codigoReserva, c);
 	
-		if (valorAPagar >= 0)
+		if (resposta != null)
 		{
-			out.writeUTF("Trotinete Estacionada!.\n\tValor a pagar: " + valorAPagar + "€");
+			out.writeUTF("Trotinete Estacionada!\n\tValor a pagar: " + resposta[0] + "€" + 
+						 ((resposta[1]!=0) ?"\tValor de Recompensa: " + resposta[1] + "€" :""));
 			out.flush();
 		}
 		else

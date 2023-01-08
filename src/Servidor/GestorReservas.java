@@ -47,7 +47,7 @@ public class GestorReservas
 		return r.getCodigoReserva();
 	}
 
-	public float estacionar(int codigoReserva, Coord coord)
+	public float[] estacionar(int codigoReserva, Coord coord)
 	{
 		this.lock.lock();
 		try
@@ -55,7 +55,7 @@ public class GestorReservas
 			Reserva r = this.reservas.get(codigoReserva);
 
 			if (r == null)
-				return -1;
+				return null;
 
 			this.mapa.estacionar(coord);
 			this.contador.incrementar();
@@ -68,8 +68,11 @@ public class GestorReservas
 			float valorAPagar = inicio.DistanceTo(coord) * precoPorUD * IVA;
 
 			long difMin = ChronoUnit.MINUTES.between(r.getDataReserva(), LocalDateTime.now());
-
-			return difMin*precoPorMin +  valorAPagar - ((elegivel) ?valorAPagar * percentagemRecompensa :0); 
+		
+			float[] ans = new float[2];
+			ans[0] = difMin*precoPorMin +  valorAPagar;
+			ans[1] = ((elegivel) ?valorAPagar * percentagemRecompensa :0); 
+			return ans; 
 		}
 		finally { this.lock.unlock(); }
 	}

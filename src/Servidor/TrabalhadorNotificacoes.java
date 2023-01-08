@@ -28,13 +28,10 @@ public class TrabalhadorNotificacoes implements Runnable
 		{
 			while(this.running)
 			{
-				System.out.println("OLAAAAA");
 				List<Coord> notificar = u.getNotificar();
-				System.out.println(notificar);
 				for(Coord c : notificar)
 					if (this.recompensas.destinoPerto(c))
 					{
-						System.out.println("OIEEE" + c);
 						out.writeUTF("NOTIFICACAO;Recompensa perto de " + c.toString());
 						out.flush();
 						u.removeNotificar(c);

@@ -24,34 +24,19 @@ public class ClienteMenu implements Runnable {
         this.cs = cs;
     }
 
-	public static String pad(int width, String padStr, String str)
-	{
-		int n = width - str.length();
-		if (n==0) return str;
-		return String.format("%0" + n + "d", 0).replace("0", padStr) + str;
-	}
-
-	public static String center(int width, String padStr, String str)
-	{
-		int n = width - str.length();
-		if (n==0) return str;
-		return String.format("%0" + n/2 + "d" + "%s%0" + (n/2 + n%2) + "d", 0, str, 0).replace("0", padStr);
-	}
-
-
 	private void printOpcoes (String titulo, String[] opcoes)
 	{
 		int n = 50;
-		int len = (""+opcoes.length).length() + 3;
-		System.out.println("┌" + center(n, "─", "") + "┐");
-        System.out.println("│" + center(n, " ", titulo) + "│");
-		System.out.println("├" + pad(len, "─", "┬") + center(n-len, "─", "") + "┤");
+		System.out.println("┌" + ClienteReader.center(n, "─", "") + "┐");
+        System.out.println("│" + ClienteReader.center(n, " ", titulo) + "│");
+		System.out.println("├" + ClienteReader.center(n, "─", "") + "┤");
 
-		for (int i=1 ;  i<opcoes.length ; i++)
-			System.out.println("│" + String.format(" %" + (len-3) + "d │", i) + center(n-len," ", opcoes[i-1]) + "│");
+		int len = (""+opcoes.length).length() + 2;
+		for (int i=1 ;  i<opcoes.length-1 ; i++)
+			System.out.println("│ " + String.format("%" + len + "d", i) + ClienteReader.center(n," ", opcoes[i-1]) + "│");
 
-		System.out.println("│"+ String.format(" %" + (len-3) + "d │", 0) + center(n-len," ", opcoes[opcoes.length-1]) + "│");
-        System.out.println("└" + pad(len, "─", "┴") + center(n-len, "─", "") + "┘");
+		System.out.println("│"+ ClienteReader.center(n," ", opcoes[opcoes.length-1]) + "│");
+        System.out.println("└" + ClienteReader.center(n, "─", "") + "┘");
         System.out.print(" Opção: ");
 	}
 
@@ -61,16 +46,16 @@ public class ClienteMenu implements Runnable {
     public void printmenu() {
         switch (this.menu_status) {
             case 0: // escolher registo/login
-                this.printOpcoes("Menu de Inicio de Sessão", new String[] {"Log In", "Registar", "Sair"});
+                this.printOpcoes("Menu de Inicio de Sessão", new String[] {" 1 │ Log In", " 2 │ Registar", " 0 │ Sair"});
                 break;
 
             case 1: // tem sessão iniciada
-                this.printOpcoes("Menu de Funcionalidades", new String[] {	"Fazer Reserva",
-																			"Listar Trotinetes Livres",
-																			"Listar Recompensas",
-																			"Estacionar Trotinete",
-																			"Notificar Recompensas",
-																			"Logout"});
+                this.printOpcoes("Menu de Funcionalidades", new String[] {	" 1 │ Fazer Reserva",
+																			" 2 │ Listar Trotinetes Livres",
+																			" 3 │ Listar Recompensas",
+																			" 4 │ Estacionar Trotinete",
+																			" 5 │ Notificar Recompensas",
+																			" 0 │ Logout"});
                 break;
 
         }

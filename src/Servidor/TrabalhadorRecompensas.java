@@ -115,7 +115,6 @@ public class TrabalhadorRecompensas implements Runnable
 
 				this.adicionarRecompensas(poucoPopuladas, muitoPopuladas);
 				this.removerRecompensas(poucoPopuladas);
-				System.out.println(this.recompensas.toString() + poucoPopuladas +  muitoPopuladas);
 				
 				while (this.running && c == contador.getContador())
 				{
