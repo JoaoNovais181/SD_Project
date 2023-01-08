@@ -47,7 +47,7 @@ public class ClienteMenu implements Runnable {
                 break;
 
             case 1: // tem sessão iniciada
-                this.printOpcoes("Menu de Inicio de Sessão", new String[] {	" 1 | Fazer Reserva",
+                this.printOpcoes("Menu de Funcionalidades", new String[] {	" 1 | Fazer Reserva",
 																			" 2 | Listar Trotinetes Livres",
 																			" 3 | Listar Recompensas",
 																			" 4 | Estacionar Trotinete",
