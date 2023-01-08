@@ -174,10 +174,12 @@ public class GereMensagem implements Runnable{
     private void reserva(String msg) throws IOException {
         String[] args = msg.split(";");
         Coord c = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-        int codigoReserva = this.gestorReservas.reservar(c);
+        Reserva r = this.gestorReservas.reservar(c);
+		int codigoReserva = r.getCodigoReserva();
+		Coord coord = r.getLocalReserva();
 
         if (codigoReserva != -1) {
-            out.writeUTF("Reserva feita com sucesso!\n\tCódigo de reserva: " + codigoReserva);
+            out.writeUTF("Reserva feita com sucesso!\n\tReserva feita em: " + coord.toString() + " com código de reserva: " + codigoReserva);
             out.flush();
         }
         else {

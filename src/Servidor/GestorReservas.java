@@ -27,11 +27,11 @@ public class GestorReservas
 		this.contador = Contador.getInstance();
 	}
 
-	public int reservar(Coord coord)
+	public Reserva reservar(Coord coord)
 	{
 		Coord localReserva = this.mapa.reservar(coord);
 		if (localReserva == null)
-			return -1;
+			return null;
 
 		Reserva r; 
 		try
@@ -44,7 +44,7 @@ public class GestorReservas
 		}
 		finally { this.lock.unlock(); }
 
-		return r.getCodigoReserva();
+		return r;
 	}
 
 	public float[] estacionar(int codigoReserva, Coord coord)
@@ -57,6 +57,7 @@ public class GestorReservas
 			if (r == null)
 				return null;
 
+			this.reservas.remove(codigoReserva);
 			this.mapa.estacionar(coord);
 			this.contador.incrementar();
 			this.lock.sinalizaAcao();;
