@@ -14,6 +14,9 @@ import java.util.concurrent.locks.Condition;
  * estiver a realizar operações sobre a {@link ListaRecompensas} nenhuma outra estará a fazer o mesmo</p>
  *
  * @author João Carlos Fernandes Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
  * */
 public class TrabalhadorRecompensas implements Runnable
 {	

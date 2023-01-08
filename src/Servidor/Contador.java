@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * <p> É de notar que esta classe também necessita 
  * de implementar métodos para garantir a exclusão
  * mútua, uma vez que será partilhado entre várias
- * threads </p>
+ * threads, e ainda que é singleton </p>
  *
  * @author João Carlos Fernandes Novais
  * */
@@ -27,6 +27,10 @@ public class Contador
 	 * */
 	private ReentrantLock lock;
 
+	/**
+	 * {@code Contador} usado como instância que será
+	 * acedida
+	 * */
 	private static Contador singleton = null;	
 
 	/**
@@ -38,6 +42,12 @@ public class Contador
 		this.lock = new ReentrantLock();
 	}
 
+	/**
+	 * Método usado para obter a instância
+	 * singleton de  {@code Contador}
+	 *
+	 * @return singleton do Contador
+	 * */
 	public static Contador getInstance()
 	{
 		if (Contador.singleton == null)

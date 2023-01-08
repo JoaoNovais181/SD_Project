@@ -11,18 +11,63 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Classe usada para responder às mensagens de um utilizador no contexto do Trabalho prático
+ * @author João Carlos Fernandes Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
+ * */
 public class GereMensagem implements Runnable{
+
+	/**
+	 *  {@link Socket} usada para comunicar com o utilizador
+	 * */
     private Socket cs;
+	/**
+	 * {@link DataOutputStream} usada para enviar mensagens para o utilizador
+	 * */
     private DataOutputStream out;
+	/**
+	 * {@link DataInputStream} usada para receber mensagens do utilziador
+	 * */
     private DataInputStream in;
+	/**
+	 * String que contém o nome do utilizador ativo (utilizador a que está a responder)
+	 * */
     private String active_user;
+	/**
+	 * {@link ListaUtilizadores} utilizada para guardar a informação do utilizador
+	 * */
     private Map<String, Utilizador> users;
+	/**
+	 * {@link Mapa} utilizado para guardar a informação das trotinetes
+	 * */
     private Mapa mapa;
+	/**
+	 * {@link GestorReservas} utilizado para fazer e remover reservas
+	 * */
 	private GestorReservas gestorReservas;
+	/**
+	 * {@link ListaRecompensas} utilizado para armazenar a informação das recompensas
+	 * */
 	private ListaRecompensas listaRecompensas;
+	/**
+	 * {@link TrabalhadorNotificacoes} utilizado para tratar do envio de notificações para o utilizador
+	 * */
 	private TrabalhadorNotificacoes tn;
+	/**
+	 * boolean que indica se o servidor está em modo de debug ou não
+	 * */
 	private final boolean debug;
 
+	/**
+	 * Construtor do gestor de mensagens
+	 * @param cs 
+	 * @param gestorReservas
+	 * @param listaRecompensas
+	 * @param debug
+	 * */
     public GereMensagem(Socket cs, Mapa mapa, GestorReservas gestorReservas, ListaRecompensas listaRecompensas, boolean debug) {
         this.cs = cs;
         this.active_user = null;
@@ -171,6 +216,11 @@ public class GereMensagem implements Runnable{
     }
 
 
+	/**
+	 * Método usado para reservar uma trotinete
+	 *
+	 * @param msg Mensagem enviada pelo utilizador
+	 * */
     private void reserva(String msg) throws IOException {
         String[] args = msg.split(";");
         Coord c = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
@@ -189,6 +239,11 @@ public class GereMensagem implements Runnable{
     }
 
 
+	/**
+	 * Método usado para listar ao utilizador as trotinetes livres perto de uma certa zona
+	 *
+	 * @param msg Mensagem enviada pelo utilizador
+	 * */
     private void listarTrot(String msg) throws IOException{
         String[] args = msg.split(";");
         Coord c = new Coord(Integer.parseInt(args[1]),Integer.parseInt(args[2]));
@@ -209,13 +264,19 @@ public class GereMensagem implements Runnable{
 
     }
 
+	
+	/**
+	 * Método usado para listar as recompensas com origem perto de uma certa zona
+	 *
+	 * @param msg Mensagem enviada pelo utilizador
+	 * */
 	private void listarRecompensas(String msg) throws IOException
 	{
 		String[] args = msg.split(";");
 		Coord coord = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 		List<Recompensa> lr = new ArrayList<>();
 		for (Recompensa r : this.listaRecompensas.getListaRecompensas())
-			if (r.getDestino().DistanceTo(coord) <= this.mapa.getD())
+			if (r.getOrigem().DistanceTo(coord) <= this.mapa.getD())
 				lr.add(r);
 		out.writeUTF("LISTARRECOMPENSAS");
 		out.writeInt(lr.size());
@@ -226,6 +287,11 @@ public class GereMensagem implements Runnable{
 		out.flush();
 	}
 
+	/**
+	 * Método usado para estacionar uma trotinete numa posicao indicada pelo utilizador
+	 *
+	 * @param msg Mensagem enviada pelo utilizador
+	 * */
 	private void estacionar(String msg) throws IOException
 	{
 		String[] args = msg.split(";");
@@ -246,6 +312,12 @@ public class GereMensagem implements Runnable{
 		}
 	}
 
+	 
+	/**
+	 * Método usado para adicionar a lista de posicoes a notificar do utilizador
+	 *
+	 * @param msg Mensagem enviada pelo utilizador
+	 * */
 	private void notificar(String msg) throws IOException
 	{
 		String[] args = msg.split(";");
