@@ -157,6 +157,7 @@ public class GereMensagem implements Runnable{
      */
     private void logout() throws IOException {
         if (this.active_user != null) {
+			this.users.get(this.active_user).logout();
             this.active_user = null;
         }
         out.writeUTF("LOGOUT");
@@ -178,6 +179,8 @@ public class GereMensagem implements Runnable{
 			out.writeUTF("Acesso Negado. Utilizador não existe!");
 		else if (!this.users.get(user).verificaPass(password))
 			out.writeUTF("Acesso Negado. Password Errada!");
+		else if (!this.users.get(user).login())
+			out.writeUTF("Acesso Negado. Utilizador com esse nome já está ligado!");
 		else
 		{
             this.active_user = args[1];

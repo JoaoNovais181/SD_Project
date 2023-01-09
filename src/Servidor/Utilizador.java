@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Utilizador {
     private final String username;
     private final String password;
+	private boolean loggedIn;
 
 	private Lock lock;
 	private List<Coord> notificar;
@@ -23,6 +24,7 @@ public class Utilizador {
         this.password = pass;
 		this.notificar = new ArrayList<>();
 		this.lock = new ReentrantLock();
+		this.loggedIn = false;
 	}
 
 	public boolean addNotificar(Coord coord)
@@ -75,6 +77,16 @@ public class Utilizador {
         return this.password.equals(pass);
     }
 
+	public boolean login()
+	{
+		if (this.loggedIn)
+			return false;
+		this.loggedIn = true;
+		return true;
+	}
 
-
+	public void logout()
+	{
+		this.loggedIn = false;
+	}
 }
