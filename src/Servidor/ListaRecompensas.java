@@ -15,6 +15,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <code>recompensas</code>
  * 
  * @author João Carlos Fernandes Novais a96626
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
  * */
 public class ListaRecompensas
 {
@@ -98,6 +101,14 @@ public class ListaRecompensas
 		finally { this.lock.writeLock().unlock(); }
 	}
 
+	/**
+	 * Método utilizado para verificar se um par de coordenadas é elegível para recompensa
+	 *
+	 * @param inicio Coordenada de inicio
+	 * @param fim Coordenada de fim
+	 *
+	 * @return boolean que indica se é elegível ou não para recompensa
+	 * */
 	public boolean elegivel (Coord inicio, Coord fim)
 	{
 		this.lock.readLock().lock();
@@ -111,6 +122,14 @@ public class ListaRecompensas
 		finally { this.lock.readLock().unlock(); }
 	}
 
+	/**
+	 * Método utilizado para verificar se alguma das recompensas na lista tem destino perto de 
+	 * uma dada coordenada
+	 *
+	 * @param destino Coordenada a verificar
+	 *
+	 * @return boolean que indica se existe ou não alguma recompensa com destino perto da coordenada
+	 * */
 	public boolean destinoPerto(Coord destino)
 	{
 		this.lock.readLock().lock();
@@ -124,6 +143,11 @@ public class ListaRecompensas
 		finally { this.lock.readLock().unlock(); }
 	}
 
+	/**
+	 * Método getter para a lista de recompensas
+	 *
+	 * @return {@link List}&lt;{@link Recompensa}&gt; com as recompensas;
+	 * */
 	public List<Recompensa> getListaRecompensas()
 	{
 		return new ArrayList<>(this.recompensas);

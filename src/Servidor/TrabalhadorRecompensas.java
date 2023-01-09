@@ -59,6 +59,12 @@ public class TrabalhadorRecompensas implements Runnable
 		this.running = true;
 	}
 
+	/**
+	 * Método utilziado para adicionar recompensas ao sistema
+	 *
+	 * @param poucoPopuladas lista com as coordenadas de vizinhanças com poucas trotinetes
+	 * @param muitoPopuladas lista com as coordenadas de vizinhanças com muitas trotinetes
+	 * */
 	public void adicionarRecompensas(List<Coord> poucoPopuladas, List<Coord> muitoPopuladas)
 	{
 		if (poucoPopuladas.size() != 0)
@@ -84,6 +90,11 @@ public class TrabalhadorRecompensas implements Runnable
 		}
 	}
 
+	/**
+	 * Método utilizado para remover recompensas do sistema
+	 *
+	 * @param poucoPopuladas lista com as coordenadas das vizinhanças com poucas trotinetes
+	 **/
 	public void removerRecompensas(List<Coord> poucoPopuladas)
 	{
 		List<Recompensa> lr = this.recompensas.getListaRecompensas();

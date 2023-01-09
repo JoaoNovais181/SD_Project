@@ -7,6 +7,9 @@ import java.time.format.DateTimeFormatter;
  * Implementação da classe reserva, que representa a reserva de uma trotinete
  *
  * @author João Carlos Fernandes Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
  * */
 public class Reserva
 {

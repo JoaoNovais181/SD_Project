@@ -5,6 +5,9 @@ package Servidor;
  * associada.
  *
  * @author João Carlos Fernandes Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
  * */
 public class Recompensa
 {
@@ -63,11 +66,27 @@ public class Recompensa
 		return this.origem.equals(inicio) || this.destino.equals(fim);
 	}
 
+	/**
+	 * Método utilizado para verificar se uma dada {@link Coord} tem o mesmo destino que a 
+	 * instância de {@link Recompensa}
+	 *
+	 * @param destino {@link Coord} a verificar
+	 *
+	 * @return Se tem o mesmo destino ou não
+	 **/ 
 	public boolean mesmoDestino(Coord destino)
 	{
 		return this.destino.equals(destino);
 	}
 
+	/**
+	 * Método utilizado para verificar se uma dada {@link Coord} é perto do destino da 
+	 * instância de {@link Recompensa}
+	 *
+	 * @param destino {@link Coord} a verificar
+	 *
+	 * @return Se tem o destino perto ou não
+	 **/ 
 	public boolean destinoPerto(Coord destino)
 	{
 		return this.destino.DistanceTo(destino) <= this.D;

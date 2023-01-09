@@ -5,15 +5,38 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Classe utilziada para armazenar a informação relativa a um utilizador
+ *
+ * @author João Carlos Fernande Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
+ * */
 public class Utilizador {
-    private final String username;
+	/**
+	 * Username do utilizador
+	 * */
+	private final String username;
+	/**
+	 * Password do utilizador
+	 * */
     private final String password;
+	/**
+	 * Boolean que indica se o utilizador está ligado
+	 * */
 	private boolean loggedIn;
 
+	/**
+	 * {@link Lock} utilziado para garantir exclusão mútua
+	 * */
 	private Lock lock;
+	/**
+	 * Lista de coordenadas a notificar
+	 * */
 	private List<Coord> notificar;
 
-    /*
+    /**
         Construtor da class Utilizador
 
         @param user     Username do Utilizador
@@ -27,6 +50,13 @@ public class Utilizador {
 		this.loggedIn = false;
 	}
 
+	/**
+	 * Método utilizado para adicionar uma coordanada a notificar
+	 *
+	 * @param coord coordenadas a notificar
+	 *
+	 * @return se foi possível adicionar ou não
+	 * */
 	public boolean addNotificar(Coord coord)
 	{
 		this.lock.lock();
@@ -41,6 +71,9 @@ public class Utilizador {
 		finally { this.lock.unlock(); }
 	}
 
+	/**
+	 * Método utilizado para remover uma coordenada a notificar
+	 * */
 	public void removeNotificar(Coord coord)
 	{
 		this.lock.lock();
@@ -52,6 +85,11 @@ public class Utilizador {
 		finally { this.lock.unlock(); }
 	}
 
+	/**
+	 * Método utilizado para obter a lista de coordenadas a notificar
+	 *
+	 * @return Lista de coordenadas a notificar
+	 * */
 	public List<Coord> getNotificar()
 	{
 		this.lock.lock();
@@ -62,11 +100,16 @@ public class Utilizador {
 		finally { this.lock.unlock(); }
 	}
 
+	/**
+	 * Getter para o username
+	 *
+	 * @return username do utilizador
+	 * */
     public String getUsername(){
         return this.username;
     }
 
-    /*
+    /**
         Método para verificar se a password coincide com a do Utilizador
 
         @param  pass   Password introduzida
@@ -77,6 +120,11 @@ public class Utilizador {
         return this.password.equals(pass);
     }
 
+	/**
+	 * Método uitilziado para ligar o utilizador ao sistema
+	 *
+	 * @return se foi possível ligar o utilizador
+	 * */
 	public boolean login()
 	{
 		if (this.loggedIn)
@@ -85,6 +133,9 @@ public class Utilizador {
 		return true;
 	}
 
+	/**
+	 * Método utilizador para desligar o utilizador do sistema
+	 * */
 	public void logout()
 	{
 		this.loggedIn = false;

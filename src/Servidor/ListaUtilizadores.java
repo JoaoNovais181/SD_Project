@@ -6,18 +6,44 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Classe singleton utilizada para armazenar os dados de utilziadores e manter
+ * a exclusão mútua no acesso aos mesmo
+ *
+ * @author João Carlos Fernandes Novais a96626
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
+ * */
 public class ListaUtilizadores implements Map<String,Utilizador>
 {
+	/**
+	 * {@link Map} que liga um {@link Utilziador} ao seu login
+	 * */
 	private Map<String, Utilizador> utilizadores;
+	/**
+	 * {@link ReentrantReadWriteLock} utilizado para manter a exclusão mútua
+	 * */
 	private ReentrantReadWriteLock lock;
+	/**
+	 * Instância singleton de {@code ListaUtilizadores}
+	 * */
 	private static ListaUtilizadores singleton = null;
 
+	/**
+	 * Construtor da classe
+	 * */
 	private ListaUtilizadores()
 	{
 		this.utilizadores = new HashMap<>();
 		this.lock = new ReentrantReadWriteLock();
 	}
 
+	/**
+	 * Método estático utilizado para obter a instância ativa da classe
+	 *
+	 * @return instância ativa da classe
+	 * */
 	public static ListaUtilizadores getInstance()
 	{
 		if (ListaUtilizadores.singleton == null)

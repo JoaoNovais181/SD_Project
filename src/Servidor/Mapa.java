@@ -11,6 +11,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * garantindo a exclusão mútua no acesso às suas variáveis.
  *
  * @author João Carlos Fernandes Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
  * */
 public class Mapa
 {
@@ -206,6 +209,14 @@ public class Mapa
 		finally { this.lock.readLock().unlock(); }	
 	}
 
+	/**
+	 * Método utilizado para devolver as coordenadas de trotinetes 
+	 * na vizinhança de uma dada {@link Coord}
+	 *
+	 * @param coord Coordenada da qual se quer saber as trotinetes vizinhas
+	 *
+	 * @return {@link List} de trotinetes na vizinhança da coordenada dada como parâmetro
+	 * */
 	public List<Coord> coordTrotinetesVizinhanca(Coord coord){
 
 		int xCentral = coord.getX(), yCentral = coord.getY();

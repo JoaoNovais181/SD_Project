@@ -4,6 +4,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Classe que implementa o servidor da aplicação
+ *
+ * @author João Carlos Fernandes Novais
+ * @author Beatriz Ribeiro Monteiro
+ * @author João Pedro Machado Ribeiro
+ * @author Telmo José Pereira Maciel
+ * */
 public class Servidor {
     /*
         Método que conecta o Servidor aos Clientes e inicializa os sockets para a comunicação
